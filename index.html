@@ -31,7 +31,6 @@
     min-height: 100vh;
   }
 
-  /* ヘッダー */
   header {
     background: linear-gradient(135deg, #0179E8 0%, #225AD3 100%);
     color: white;
@@ -80,7 +79,6 @@
     line-height: 1.6;
   }
 
-  /* トライアルバー */
   #trial-bar {
     background: #fff8e1;
     border-bottom: 2px solid var(--accent);
@@ -91,14 +89,12 @@
     color: #7c5800;
   }
 
-  /* メインコンテンツ */
   main {
     max-width: 720px;
     margin: 0 auto;
     padding: 28px 16px 60px;
   }
 
-  /* カード */
   .card {
     background: var(--surface);
     border-radius: var(--radius);
@@ -124,10 +120,7 @@
     font-size: 1rem;
   }
 
-  /* フォーム */
-  .form-group {
-    margin-bottom: 14px;
-  }
+  .form-group { margin-bottom: 14px; }
   label {
     display: block;
     font-size: 0.85rem;
@@ -155,20 +148,13 @@
   }
   textarea { resize: vertical; min-height: 72px; }
 
-  /* スタイル選択 */
   .style-options {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
   }
-  .style-opt {
-    position: relative;
-  }
-  .style-opt input {
-    position: absolute;
-    opacity: 0;
-    width: 0; height: 0;
-  }
+  .style-opt { position: relative; }
+  .style-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
   .style-opt label {
     display: block;
     padding: 12px 8px;
@@ -193,12 +179,7 @@
     font-size: 1.5rem;
     margin-bottom: 4px;
   }
-  .style-opt label .style-name {
-    display: block;
-    font-size: 0.78rem;
-  }
 
-  /* 生成ボタン */
   .btn-generate {
     width: 100%;
     padding: 16px;
@@ -221,13 +202,8 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(1,121,232,0.35);
   }
-  .btn-generate:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-  /* ローディング */
   .loading-area {
     display: none;
     text-align: center;
@@ -242,12 +218,8 @@
     margin: 0 auto 16px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-area p {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
+  .loading-area p { color: var(--muted); font-size: 0.9rem; }
 
-  /* 結果エリア */
   #result-area { display: none; }
 
   .result-card {
@@ -266,14 +238,8 @@
     justify-content: space-between;
     border-bottom: 1px solid var(--border);
   }
-  .result-card-header h3 {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: var(--primary);
-  }
-  .result-card-body {
-    padding: 16px 18px;
-  }
+  .result-card-header h3 { font-size: 0.88rem; font-weight: 700; color: var(--primary); }
+  .result-card-body { padding: 16px 18px; }
   .result-text {
     font-size: 0.88rem;
     line-height: 1.9;
@@ -287,11 +253,7 @@
     line-height: 1.6;
     color: var(--text);
   }
-  .result-hashtags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .result-hashtags { display: flex; flex-wrap: wrap; gap: 8px; }
   .hashtag-pill {
     background: #e8f1fd;
     color: var(--primary);
@@ -301,7 +263,6 @@
     font-weight: 700;
   }
 
-  /* コピーボタン */
   .btn-copy {
     padding: 6px 14px;
     background: var(--primary);
@@ -315,11 +276,8 @@
     white-space: nowrap;
   }
   .btn-copy:hover { background: var(--primary-dark); }
-  .btn-copy.copied {
-    background: var(--success);
-  }
+  .btn-copy.copied { background: var(--success); }
 
-  /* 文字数カウント */
   .char-count {
     display: inline-block;
     background: #e8f1fd;
@@ -331,7 +289,6 @@
     margin-left: 8px;
   }
 
-  /* Stripe誘導 */
   .paywall {
     display: none;
     background: linear-gradient(135deg, #fff8e1, #fff3cd);
@@ -341,18 +298,8 @@
     text-align: center;
     margin-bottom: 20px;
   }
-  .paywall h2 {
-    font-size: 1.2rem;
-    font-weight: 900;
-    margin-bottom: 10px;
-    color: #7c5800;
-  }
-  .paywall p {
-    font-size: 0.88rem;
-    color: #7c5800;
-    margin-bottom: 18px;
-    line-height: 1.7;
-  }
+  .paywall h2 { font-size: 1.2rem; font-weight: 900; margin-bottom: 10px; color: #7c5800; }
+  .paywall p { font-size: 0.88rem; color: #7c5800; margin-bottom: 18px; line-height: 1.7; }
   .btn-stripe {
     display: inline-block;
     background: linear-gradient(135deg, #0179E8, #225AD3);
@@ -369,7 +316,6 @@
   }
   .btn-stripe:hover { transform: translateY(-2px); }
 
-  /* フッター */
   footer {
     text-align: center;
     padding: 24px 20px;
@@ -400,7 +346,6 @@
 
 <main>
 
-  <!-- 入力フォーム -->
   <div class="card" id="input-area">
     <div class="card-title">
       <span class="icon">📌</span>
@@ -414,7 +359,7 @@
 
     <div class="form-group">
       <label>アプリの説明（1〜2行でOK）</label>
-      <textarea id="app-desc" placeholder="例：薬剤師スタッフが毎日のSNS投稿をAIで自動生成できるツールです。Instagram・X・Facebookなど6プラットフォーム対応。"></textarea>
+      <textarea id="app-desc" placeholder="例：薬剤師スタッフが毎日のSNS投稿をAIで自動生成できるツールです。"></textarea>
     </div>
 
     <div class="form-group">
@@ -423,7 +368,7 @@
     </div>
 
     <div class="form-group">
-      <label>アプリURL（GitHub Pages等）</label>
+      <label>アプリURL</label>
       <input type="url" id="app-url" placeholder="https://spc-jp.github.io/xxxx/">
     </div>
 
@@ -439,21 +384,21 @@
           <input type="radio" name="style" id="style-a" value="A" checked>
           <label for="style-a">
             <span class="style-emoji">💬</span>
-            <span class="style-name">体験談型<br>（使ってみたら…）</span>
+            体験談型<br>（使ってみたら…）
           </label>
         </div>
         <div class="style-opt">
           <input type="radio" name="style" id="style-b" value="B">
           <label for="style-b">
             <span class="style-emoji">🔥</span>
-            <span class="style-name">問題解決型<br>（こんな悩みない？）</span>
+            問題解決型<br>（こんな悩みない？）
           </label>
         </div>
         <div class="style-opt">
           <input type="radio" name="style" id="style-c" value="C">
           <label for="style-c">
             <span class="style-emoji">📋</span>
-            <span class="style-name">機能紹介型<br>（できることを解説）</span>
+            機能紹介型<br>（できることを解説）
           </label>
         </div>
       </div>
@@ -464,27 +409,25 @@
     </button>
   </div>
 
-  <!-- ローディング -->
   <div class="loading-area" id="loading-area">
     <div class="spinner"></div>
-    <p>AIがnote記事を生成しています...<br>少しお待ちください（約15〜30秒）</p>
+    <p>AIがnote記事を生成しています...<br>少しお待ちください（約20〜40秒）</p>
   </div>
 
-  <!-- Stripe誘導（無料回数終了後） -->
   <div class="paywall" id="paywall">
     <h2>🎉 無料トライアルを使い切りました！</h2>
     <p>noteみっけは月額 <strong>¥2,980</strong> でご利用いただけます。<br>
     毎月何本でもnote記事を量産できます✨</p>
-    <a href="STRIPE_URL_HERE" class="btn-stripe" target="_blank">今すぐ申し込む（¥2,980/月）</a>
+    <a href="https://buy.stripe.com/XXXX" class="btn-stripe" target="_blank" id="paywall-stripe-btn">
+      今すぐ申し込む（¥2,980/月）
+    </a>
     <br>
     <small style="color:#7c5800; font-size:0.78rem;">購入後にパスワードが届きます</small>
   </div>
 
-  <!-- 生成結果 -->
   <div id="result-area">
 
-    <!-- タイトル -->
-    <div class="result-card" id="card-title">
+    <div class="result-card">
       <div class="result-card-header">
         <h3>📌 noteタイトル</h3>
         <button class="btn-copy" onclick="copyText('out-title', this)">コピー</button>
@@ -494,8 +437,7 @@
       </div>
     </div>
 
-    <!-- 本文 -->
-    <div class="result-card" id="card-body">
+    <div class="result-card">
       <div class="result-card-header">
         <h3>📝 note本文 <span class="char-count" id="char-count">0文字</span></h3>
         <button class="btn-copy" onclick="copyText('out-body', this)">コピー</button>
@@ -505,8 +447,7 @@
       </div>
     </div>
 
-    <!-- ハッシュタグ -->
-    <div class="result-card" id="card-tags">
+    <div class="result-card">
       <div class="result-card-header">
         <h3>🏷️ ハッシュタグ（7つ）</h3>
         <button class="btn-copy" onclick="copyText('out-tags-text', this)">コピー</button>
@@ -517,8 +458,7 @@
       </div>
     </div>
 
-    <!-- Midjourneyプロンプト -->
-    <div class="result-card" id="card-mj">
+    <div class="result-card">
       <div class="result-card-header">
         <h3>🎨 Midjourney V8 プロンプト</h3>
         <button class="btn-copy" onclick="copyText('out-mj', this)">コピー</button>
@@ -528,12 +468,12 @@
       </div>
     </div>
 
-    <!-- 再生成ボタン -->
-    <button class="btn-generate" onclick="resetForm()" style="background:linear-gradient(135deg,#6b7280,#4b5563);box-shadow:0 4px 14px rgba(107,114,128,0.30);">
+    <button class="btn-generate" onclick="resetForm()"
+      style="background:linear-gradient(135deg,#6b7280,#4b5563);box-shadow:0 4px 14px rgba(107,114,128,0.30);">
       🔄 新しい記事を作る
     </button>
 
-  </div><!-- /result-area -->
+  </div>
 
 </main>
 
@@ -543,17 +483,10 @@
 </footer>
 
 <script>
-// ───────────────────────────────
-// 設定
-// ───────────────────────────────
-const WORKER_URL = 'https://yymmatsu.workers.dev'; // Cloudflare Worker URL
+const WORKER_URL = 'https://note-mikke-api.yymmatsu.workers.dev';
 const FREE_LIMIT = 3;
 const STORAGE_KEY = 'note_mikke_count';
-const PASSWORD = 'note2025'; // パスワード解除用
 
-// ───────────────────────────────
-// トライアルカウント
-// ───────────────────────────────
 function getCount() {
   return parseInt(localStorage.getItem(STORAGE_KEY) || '0');
 }
@@ -564,20 +497,18 @@ function updateTrialBar() {
   const remaining = Math.max(FREE_LIMIT - getCount(), 0);
   document.getElementById('trial-count').textContent = remaining;
   if (remaining <= 0) {
-    document.getElementById('trial-bar').style.background = '#fee2e2';
-    document.getElementById('trial-bar').style.color = '#991b1b';
-    document.getElementById('trial-bar').textContent = '⚠️ 無料トライアルを使い切りました（お申込みで継続利用できます）';
+    const bar = document.getElementById('trial-bar');
+    bar.style.background = '#fee2e2';
+    bar.style.color = '#991b1b';
+    bar.textContent = '⚠️ 無料トライアルを使い切りました（お申込みで継続利用できます）';
   }
 }
 
-// ───────────────────────────────
-// バリデーション
-// ───────────────────────────────
 function validate() {
   const appName = document.getElementById('app-name').value.trim();
   const appDesc = document.getElementById('app-desc').value.trim();
-  const target = document.getElementById('target-reader').value.trim();
-  const appUrl = document.getElementById('app-url').value.trim();
+  const target  = document.getElementById('target-reader').value.trim();
+  const appUrl  = document.getElementById('app-url').value.trim();
   if (!appName) { alert('アプリ名を入力してください'); return false; }
   if (!appDesc) { alert('アプリの説明を入力してください'); return false; }
   if (!target)  { alert('ターゲット読者を入力してください'); return false; }
@@ -585,16 +516,13 @@ function validate() {
   return true;
 }
 
-// ───────────────────────────────
-// プロンプト生成
-// ───────────────────────────────
 function buildPrompt() {
-  const appName    = document.getElementById('app-name').value.trim();
-  const appDesc    = document.getElementById('app-desc').value.trim();
-  const target     = document.getElementById('target-reader').value.trim();
-  const appUrl     = document.getElementById('app-url').value.trim();
-  const stripeUrl  = document.getElementById('stripe-url').value.trim();
-  const styleVal   = document.querySelector('input[name="style"]:checked').value;
+  const appName   = document.getElementById('app-name').value.trim();
+  const appDesc   = document.getElementById('app-desc').value.trim();
+  const target    = document.getElementById('target-reader').value.trim();
+  const appUrl    = document.getElementById('app-url').value.trim();
+  const stripeUrl = document.getElementById('stripe-url').value.trim();
+  const styleVal  = document.querySelector('input[name="style"]:checked').value;
 
   const styleMap = {
     A: '体験談型：「このアプリを使ってみたらこう変わった」という実体験ストーリー形式。感情の動きを大切に、読者が「自分もそうなれる」と感じる構成にする。',
@@ -613,8 +541,8 @@ function buildPrompt() {
 {
   "title": "クリックされやすいnoteタイトル（30〜45文字）",
   "body": "note本文（2,400〜2,600文字。##大見出し4〜5個、小見出しあり。指定スタイルで書く）",
-  "hashtags": ["ハッシュタグ1", "ハッシュタグ2", "ハッシュタグ3", "ハッシュタグ4", "ハッシュタグ5", "ハッシュタグ6", "ハッシュタグ7"],
-  "midjourney": "Midjourney V8用プロンプト（後述の条件で）"
+  "hashtags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"],
+  "midjourney": "Midjourney V8用プロンプト"
 }
 
 【アプリ情報】
@@ -633,7 +561,7 @@ ${styleMap[styleVal]}
 ・各セクションに自然な小見出しや改行を入れる
 ・ですます調で書く
 ・読者への語りかけを自然に含める
-・文末（最後の##見出しセクション）でアプリURLと${stripeUrl ? '決済URL' : 'アプリURL'}へ優しく誘導する
+・文末の##見出しセクションでアプリURLと決済URLへ優しく誘導する
 ・「無料でお試しいただけます」「ぜひ一度使ってみてください」など柔らかい表現を使う
 
 【ハッシュタグのルール】
@@ -643,28 +571,22 @@ ${styleMap[styleVal]}
 
 【Midjourneyプロンプトのルール】
 ・英語でプロンプトを書く
-・画像サイズ：--ar 1200:630（noteサムネイル推奨サイズ）
-・スタイル：--style raw --v 6.1
-・画像内に日本語テキストを含める場合は、テキスト表現をプロンプトに明示する
-・画像イメージ：明るくプロフェッショナル、ターゲット業種のイメージ
-・プロンプトの中に「日本語タイトル：${appName}」「日本語キャッチコピー：（アプリに合うもの）」をtext要素として含めること
+・画像内に日本語テキストを含める場合、テキスト表現をプロンプトに明示する
+・明るくプロフェッショナルなビジュアル、ターゲット業種のイメージ
+・日本語タイトル：${appName} と日本語キャッチコピーをtext要素として含める
 ・最終行に --ar 1200:630 --style raw --v 6.1 を付ける`;
 }
 
-// ───────────────────────────────
-// メイン生成処理
-// ───────────────────────────────
 async function generate() {
   if (!validate()) return;
 
   const count = getCount();
   if (count >= FREE_LIMIT) {
-    document.getElementById('paywall').style.display = 'block';
     document.getElementById('input-area').style.display = 'none';
+    document.getElementById('paywall').style.display = 'block';
     return;
   }
 
-  // UI切り替え
   document.getElementById('gen-btn').disabled = true;
   document.getElementById('input-area').style.pointerEvents = 'none';
   document.getElementById('input-area').style.opacity = '0.5';
@@ -672,31 +594,24 @@ async function generate() {
   document.getElementById('result-area').style.display = 'none';
 
   try {
-    const prompt = buildPrompt();
-
     const response = await fetch(WORKER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 5000,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [{ role: 'user', content: buildPrompt() }]
       })
     });
 
-    if (!response.ok) {
-      throw new Error('APIエラー: ' + response.status);
-    }
+    if (!response.ok) throw new Error('APIエラー: ' + response.status);
 
     const data = await response.json();
     const rawText = data.content[0].text;
-
-    // JSON抽出
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('JSON形式で返ってきませんでした');
     const result = JSON.parse(jsonMatch[0]);
 
-    // 表示
     renderResult(result);
     addCount();
     updateTrialBar();
@@ -711,49 +626,34 @@ async function generate() {
   }
 }
 
-// ───────────────────────────────
-// 結果を画面に表示
-// ───────────────────────────────
 function renderResult(result) {
-  // タイトル
   document.getElementById('out-title').textContent = result.title || '';
 
-  // 本文
   const body = result.body || '';
   document.getElementById('out-body').textContent = body;
   document.getElementById('char-count').textContent = body.length + '文字';
 
-  // ハッシュタグ
   const tags = result.hashtags || [];
   const tagsContainer = document.getElementById('out-tags');
   tagsContainer.innerHTML = '';
-  const tagLine = tags.map(t => '#' + t).join(' ');
   tags.forEach(tag => {
     const pill = document.createElement('div');
     pill.className = 'hashtag-pill';
     pill.textContent = '#' + tag;
     tagsContainer.appendChild(pill);
   });
-  document.getElementById('out-tags-text').textContent = tagLine;
+  document.getElementById('out-tags-text').textContent = tags.map(t => '#' + t).join(' ');
 
-  // MJ プロンプト
   document.getElementById('out-mj').textContent = result.midjourney || '';
 
-  // 表示
   document.getElementById('result-area').style.display = 'block';
-
-  // スクロール
   setTimeout(() => {
     document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
 }
 
-// ───────────────────────────────
-// コピー
-// ───────────────────────────────
 function copyText(elementId, btn) {
-  const el = document.getElementById(elementId);
-  const text = el.textContent;
+  const text = document.getElementById(elementId).textContent;
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = '✅ コピー済';
     btn.classList.add('copied');
@@ -764,17 +664,11 @@ function copyText(elementId, btn) {
   });
 }
 
-// ───────────────────────────────
-// リセット
-// ───────────────────────────────
 function resetForm() {
   document.getElementById('result-area').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ───────────────────────────────
-// 初期化
-// ───────────────────────────────
 updateTrialBar();
 </script>
 </body>
