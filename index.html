@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>noteみっけ｜note記事をAIで量産</title>
+<meta name="description" content="アプリ名とURLを入れるだけで、note販売記事を丸ごと生成。タイトル・本文・ハッシュタグ・Midjourneyプロンプトまでまとめて出力。">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=M+PLUS+Rounded+1c:wght@700;800&display=swap');
+
+  :root {
+    --primary: #0179E8;
+    --primary-dark: #005bbf;
+    --accent: #FFD600;
+    --bg: #f4f7fb;
+    --surface: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #dde3ee;
+    --success: #10b981;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(1,121,232,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ヘッダー */
+  header {
+    background: linear-gradient(135deg, #0179E8 0%, #225AD3 100%);
+    color: white;
+    padding: 32px 20px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #1a1a2e;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+    letter-spacing: 0.08em;
+  }
+  header h1 {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  header p {
+    font-size: 0.92rem;
+    opacity: 0.88;
+    line-height: 1.6;
+  }
+
+  /* トライアルバー */
+  #trial-bar {
+    background: #fff8e1;
+    border-bottom: 2px solid var(--accent);
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #7c5800;
+  }
+
+  /* メインコンテンツ */
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px 16px 60px;
+  }
+
+  /* カード */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 24px 22px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title span.icon {
+    background: #e8f1fd;
+    border-radius: 8px;
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+
+  /* フォーム */
+  .form-group {
+    margin-bottom: 14px;
+  }
+  label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.92rem;
+    background: #fafcff;
+    color: var(--text);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  input:focus, textarea:focus {
+    border-color: var(--primary);
+    background: #fff;
+  }
+  textarea { resize: vertical; min-height: 72px; }
+
+  /* スタイル選択 */
+  .style-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  .style-opt {
+    position: relative;
+  }
+  .style-opt input {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+  }
+  .style-opt label {
+    display: block;
+    padding: 12px 8px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: #fafcff;
+    transition: all 0.2s;
+    line-height: 1.4;
+  }
+  .style-opt input:checked + label {
+    border-color: var(--primary);
+    background: #e8f1fd;
+    color: var(--primary);
+  }
+  .style-opt label .style-emoji {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+  .style-opt label .style-name {
+    display: block;
+    font-size: 0.78rem;
+  }
+
+  /* 生成ボタン */
+  .btn-generate {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #0179E8, #225AD3);
+    color: white;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(1,121,232,0.30);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-generate:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(1,121,232,0.35);
+  }
+  .btn-generate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ローディング */
+  .loading-area {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 4px solid #dde3ee;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-area p {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* 結果エリア */
+  #result-area { display: none; }
+
+  .result-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .result-card-header {
+    background: linear-gradient(90deg, #e8f1fd, #f4f7fb);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-card-header h3 {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .result-card-body {
+    padding: 16px 18px;
+  }
+  .result-text {
+    font-size: 0.88rem;
+    line-height: 1.9;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .result-title-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .result-hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hashtag-pill {
+    background: #e8f1fd;
+    color: var(--primary);
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  /* コピーボタン */
+  .btn-copy {
+    padding: 6px 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-copy:hover { background: var(--primary-dark); }
+  .btn-copy.copied {
+    background: var(--success);
+  }
+
+  /* 文字数カウント */
+  .char-count {
+    display: inline-block;
+    background: #e8f1fd;
+    color: var(--primary);
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 99px;
+    margin-left: 8px;
+  }
+
+  /* Stripe誘導 */
+  .paywall {
+    display: none;
+    background: linear-gradient(135deg, #fff8e1, #fff3cd);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 28px 22px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .paywall h2 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #7c5800;
+  }
+  .paywall p {
+    font-size: 0.88rem;
+    color: #7c5800;
+    margin-bottom: 18px;
+    line-height: 1.7;
+  }
+  .btn-stripe {
+    display: inline-block;
+    background: linear-gradient(135deg, #0179E8, #225AD3);
+    color: white;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(1,121,232,0.30);
+    transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+  .btn-stripe:hover { transform: translateY(-2px); }
+
+  /* フッター */
+  footer {
+    text-align: center;
+    padding: 24px 20px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    margin-top: 20px;
+  }
+
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.7rem; }
+    .style-options { grid-template-columns: 1fr; }
+    .style-opt label { display: flex; align-items: center; gap: 10px; text-align: left; padding: 10px 14px; }
+    .style-opt label .style-emoji { margin-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-badge">✨ みっけシリーズ</div>
+  <h1>📝 noteみっけ</h1>
+  <p>アプリ名とURLを入れるだけで<br>note販売記事をまるごとAI生成します</p>
+</header>
+
+<div id="trial-bar">🎁 無料トライアル：あと <span id="trial-count">3</span> 回使えます</div>
+
+<main>
+
+  <!-- 入力フォーム -->
+  <div class="card" id="input-area">
+    <div class="card-title">
+      <span class="icon">📌</span>
+      アプリ情報を入力してください
+    </div>
+
+    <div class="form-group">
+      <label>アプリ名（例：薬局SNSみっけ）</label>
+      <input type="text" id="app-name" placeholder="アプリ名を入力" maxlength="50">
+    </div>
+
+    <div class="form-group">
+      <label>アプリの説明（1〜2行でOK）</label>
+      <textarea id="app-desc" placeholder="例：薬剤師スタッフが毎日のSNS投稿をAIで自動生成できるツールです。Instagram・X・Facebookなど6プラットフォーム対応。"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>ターゲット読者（例：薬剤師、薬局スタッフ）</label>
+      <input type="text" id="target-reader" placeholder="誰に向けた記事ですか？" maxlength="40">
+    </div>
+
+    <div class="form-group">
+      <label>アプリURL（GitHub Pages等）</label>
+      <input type="url" id="app-url" placeholder="https://spc-jp.github.io/xxxx/">
+    </div>
+
+    <div class="form-group">
+      <label>Stripe決済URL（任意）</label>
+      <input type="url" id="stripe-url" placeholder="https://buy.stripe.com/xxxx">
+    </div>
+
+    <div class="form-group" style="margin-top:18px;">
+      <label>記事スタイルを選んでください</label>
+      <div class="style-options">
+        <div class="style-opt">
+          <input type="radio" name="style" id="style-a" value="A" checked>
+          <label for="style-a">
+            <span class="style-emoji">💬</span>
+            <span class="style-name">体験談型<br>（使ってみたら…）</span>
+          </label>
+        </div>
+        <div class="style-opt">
+          <input type="radio" name="style" id="style-b" value="B">
+          <label for="style-b">
+            <span class="style-emoji">🔥</span>
+            <span class="style-name">問題解決型<br>（こんな悩みない？）</span>
+          </label>
+        </div>
+        <div class="style-opt">
+          <input type="radio" name="style" id="style-c" value="C">
+          <label for="style-c">
+            <span class="style-emoji">📋</span>
+            <span class="style-name">機能紹介型<br>（できることを解説）</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="gen-btn" onclick="generate()">
+      ✨ note記事をAI生成する
+    </button>
+  </div>
+
+  <!-- ローディング -->
+  <div class="loading-area" id="loading-area">
+    <div class="spinner"></div>
+    <p>AIがnote記事を生成しています...<br>少しお待ちください（約15〜30秒）</p>
+  </div>
+
+  <!-- Stripe誘導（無料回数終了後） -->
+  <div class="paywall" id="paywall">
+    <h2>🎉 無料トライアルを使い切りました！</h2>
+    <p>noteみっけは月額 <strong>¥2,980</strong> でご利用いただけます。<br>
+    毎月何本でもnote記事を量産できます✨</p>
+    <a href="STRIPE_URL_HERE" class="btn-stripe" target="_blank">今すぐ申し込む（¥2,980/月）</a>
+    <br>
+    <small style="color:#7c5800; font-size:0.78rem;">購入後にパスワードが届きます</small>
+  </div>
+
+  <!-- 生成結果 -->
+  <div id="result-area">
+
+    <!-- タイトル -->
+    <div class="result-card" id="card-title">
+      <div class="result-card-header">
+        <h3>📌 noteタイトル</h3>
+        <button class="btn-copy" onclick="copyText('out-title', this)">コピー</button>
+      </div>
+      <div class="result-card-body">
+        <div id="out-title" class="result-title-text"></div>
+      </div>
+    </div>
+
+    <!-- 本文 -->
+    <div class="result-card" id="card-body">
+      <div class="result-card-header">
+        <h3>📝 note本文 <span class="char-count" id="char-count">0文字</span></h3>
+        <button class="btn-copy" onclick="copyText('out-body', this)">コピー</button>
+      </div>
+      <div class="result-card-body">
+        <div id="out-body" class="result-text"></div>
+      </div>
+    </div>
+
+    <!-- ハッシュタグ -->
+    <div class="result-card" id="card-tags">
+      <div class="result-card-header">
+        <h3>🏷️ ハッシュタグ（7つ）</h3>
+        <button class="btn-copy" onclick="copyText('out-tags-text', this)">コピー</button>
+      </div>
+      <div class="result-card-body">
+        <div id="out-tags" class="result-hashtags"></div>
+        <div id="out-tags-text" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Midjourneyプロンプト -->
+    <div class="result-card" id="card-mj">
+      <div class="result-card-header">
+        <h3>🎨 Midjourney V8 プロンプト</h3>
+        <button class="btn-copy" onclick="copyText('out-mj', this)">コピー</button>
+      </div>
+      <div class="result-card-body">
+        <div id="out-mj" class="result-text"></div>
+      </div>
+    </div>
+
+    <!-- 再生成ボタン -->
+    <button class="btn-generate" onclick="resetForm()" style="background:linear-gradient(135deg,#6b7280,#4b5563);box-shadow:0 4px 14px rgba(107,114,128,0.30);">
+      🔄 新しい記事を作る
+    </button>
+
+  </div><!-- /result-area -->
+
+</main>
+
+<footer>
+  noteみっけ｜みっけシリーズ by Smile Plus Consulting<br>
+  「考えるを、ひとりにしない」
+</footer>
+
+<script>
+// ───────────────────────────────
+// 設定
+// ───────────────────────────────
+const WORKER_URL = 'https://yymmatsu.workers.dev'; // Cloudflare Worker URL
+const FREE_LIMIT = 3;
+const STORAGE_KEY = 'note_mikke_count';
+const PASSWORD = 'note2025'; // パスワード解除用
+
+// ───────────────────────────────
+// トライアルカウント
+// ───────────────────────────────
+function getCount() {
+  return parseInt(localStorage.getItem(STORAGE_KEY) || '0');
+}
+function addCount() {
+  localStorage.setItem(STORAGE_KEY, getCount() + 1);
+}
+function updateTrialBar() {
+  const remaining = Math.max(FREE_LIMIT - getCount(), 0);
+  document.getElementById('trial-count').textContent = remaining;
+  if (remaining <= 0) {
+    document.getElementById('trial-bar').style.background = '#fee2e2';
+    document.getElementById('trial-bar').style.color = '#991b1b';
+    document.getElementById('trial-bar').textContent = '⚠️ 無料トライアルを使い切りました（お申込みで継続利用できます）';
+  }
+}
+
+// ───────────────────────────────
+// バリデーション
+// ───────────────────────────────
+function validate() {
+  const appName = document.getElementById('app-name').value.trim();
+  const appDesc = document.getElementById('app-desc').value.trim();
+  const target = document.getElementById('target-reader').value.trim();
+  const appUrl = document.getElementById('app-url').value.trim();
+  if (!appName) { alert('アプリ名を入力してください'); return false; }
+  if (!appDesc) { alert('アプリの説明を入力してください'); return false; }
+  if (!target)  { alert('ターゲット読者を入力してください'); return false; }
+  if (!appUrl)  { alert('アプリURLを入力してください'); return false; }
+  return true;
+}
+
+// ───────────────────────────────
+// プロンプト生成
+// ───────────────────────────────
+function buildPrompt() {
+  const appName    = document.getElementById('app-name').value.trim();
+  const appDesc    = document.getElementById('app-desc').value.trim();
+  const target     = document.getElementById('target-reader').value.trim();
+  const appUrl     = document.getElementById('app-url').value.trim();
+  const stripeUrl  = document.getElementById('stripe-url').value.trim();
+  const styleVal   = document.querySelector('input[name="style"]:checked').value;
+
+  const styleMap = {
+    A: '体験談型：「このアプリを使ってみたらこう変わった」という実体験ストーリー形式。感情の動きを大切に、読者が「自分もそうなれる」と感じる構成にする。',
+    B: '問題解決型：「こんな悩みありませんか？」と共感から入り、問題提起→原因分析→解決策→このアプリが答えだ、という流れで説得力を持たせる。',
+    C: '機能紹介型：アプリの機能を順番にわかりやすく解説する。見出しごとに機能を紹介し、使い方・メリット・こんな人向け、という構成で信頼感を高める。'
+  };
+
+  const stripeText = stripeUrl
+    ? `決済URL：${stripeUrl}（文末で月額料金と共に自然に紹介してください）`
+    : '（決済URLは省略してください）';
+
+  return `あなたはnoteのプロライターです。以下の情報をもとに、note販売記事を生成してください。
+
+必ず以下のJSON形式のみで返してください。説明文や前置きは一切不要です。
+
+{
+  "title": "クリックされやすいnoteタイトル（30〜45文字）",
+  "body": "note本文（2,400〜2,600文字。##大見出し4〜5個、小見出しあり。指定スタイルで書く）",
+  "hashtags": ["ハッシュタグ1", "ハッシュタグ2", "ハッシュタグ3", "ハッシュタグ4", "ハッシュタグ5", "ハッシュタグ6", "ハッシュタグ7"],
+  "midjourney": "Midjourney V8用プロンプト（後述の条件で）"
+}
+
+【アプリ情報】
+・アプリ名：${appName}
+・説明：${appDesc}
+・ターゲット読者：${target}
+・アプリURL：${appUrl}
+・${stripeText}
+
+【記事スタイル】
+${styleMap[styleVal]}
+
+【本文の構成ルール】
+・文字数：2,400〜2,600文字（厳守）
+・##大見出し を4〜5個使う（noteで目次が自動生成されます）
+・各セクションに自然な小見出しや改行を入れる
+・ですます調で書く
+・読者への語りかけを自然に含める
+・文末（最後の##見出しセクション）でアプリURLと${stripeUrl ? '決済URL' : 'アプリURL'}へ優しく誘導する
+・「無料でお試しいただけます」「ぜひ一度使ってみてください」など柔らかい表現を使う
+
+【ハッシュタグのルール】
+・7つ
+・#を付けずに配列に入れる（例："AI活用"）
+・ターゲット読者・業種・ツールに関連するものを選ぶ
+
+【Midjourneyプロンプトのルール】
+・英語でプロンプトを書く
+・画像サイズ：--ar 1200:630（noteサムネイル推奨サイズ）
+・スタイル：--style raw --v 6.1
+・画像内に日本語テキストを含める場合は、テキスト表現をプロンプトに明示する
+・画像イメージ：明るくプロフェッショナル、ターゲット業種のイメージ
+・プロンプトの中に「日本語タイトル：${appName}」「日本語キャッチコピー：（アプリに合うもの）」をtext要素として含めること
+・最終行に --ar 1200:630 --style raw --v 6.1 を付ける`;
+}
+
+// ───────────────────────────────
+// メイン生成処理
+// ───────────────────────────────
+async function generate() {
+  if (!validate()) return;
+
+  const count = getCount();
+  if (count >= FREE_LIMIT) {
+    document.getElementById('paywall').style.display = 'block';
+    document.getElementById('input-area').style.display = 'none';
+    return;
+  }
+
+  // UI切り替え
+  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('input-area').style.pointerEvents = 'none';
+  document.getElementById('input-area').style.opacity = '0.5';
+  document.getElementById('loading-area').style.display = 'block';
+  document.getElementById('result-area').style.display = 'none';
+
+  try {
+    const prompt = buildPrompt();
+
+    const response = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 5000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('APIエラー: ' + response.status);
+    }
+
+    const data = await response.json();
+    const rawText = data.content[0].text;
+
+    // JSON抽出
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('JSON形式で返ってきませんでした');
+    const result = JSON.parse(jsonMatch[0]);
+
+    // 表示
+    renderResult(result);
+    addCount();
+    updateTrialBar();
+
+  } catch (err) {
+    alert('エラーが発生しました: ' + err.message);
+  } finally {
+    document.getElementById('gen-btn').disabled = false;
+    document.getElementById('input-area').style.pointerEvents = '';
+    document.getElementById('input-area').style.opacity = '';
+    document.getElementById('loading-area').style.display = 'none';
+  }
+}
+
+// ───────────────────────────────
+// 結果を画面に表示
+// ───────────────────────────────
+function renderResult(result) {
+  // タイトル
+  document.getElementById('out-title').textContent = result.title || '';
+
+  // 本文
+  const body = result.body || '';
+  document.getElementById('out-body').textContent = body;
+  document.getElementById('char-count').textContent = body.length + '文字';
+
+  // ハッシュタグ
+  const tags = result.hashtags || [];
+  const tagsContainer = document.getElementById('out-tags');
+  tagsContainer.innerHTML = '';
+  const tagLine = tags.map(t => '#' + t).join(' ');
+  tags.forEach(tag => {
+    const pill = document.createElement('div');
+    pill.className = 'hashtag-pill';
+    pill.textContent = '#' + tag;
+    tagsContainer.appendChild(pill);
+  });
+  document.getElementById('out-tags-text').textContent = tagLine;
+
+  // MJ プロンプト
+  document.getElementById('out-mj').textContent = result.midjourney || '';
+
+  // 表示
+  document.getElementById('result-area').style.display = 'block';
+
+  // スクロール
+  setTimeout(() => {
+    document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ───────────────────────────────
+// コピー
+// ───────────────────────────────
+function copyText(elementId, btn) {
+  const el = document.getElementById(elementId);
+  const text = el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ コピー済';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピー';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ───────────────────────────────
+// リセット
+// ───────────────────────────────
+function resetForm() {
+  document.getElementById('result-area').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ───────────────────────────────
+// 初期化
+// ───────────────────────────────
+updateTrialBar();
+</script>
+</body>
+</html>
