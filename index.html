@@ -3,673 +3,605 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>noteみっけ｜note記事をAIで量産</title>
-<meta name="description" content="アプリ名とURLを入れるだけで、note販売記事を丸ごと生成。タイトル・本文・ハッシュタグ・Midjourneyプロンプトまでまとめて出力。">
+<title>noteみっけ｜note記事ジェネレーター</title>
+<meta name="description" content="アプリ名とコンセプトを入れるだけで2500文字のnote記事を自動生成。MidJourneyサムネイルプロンプトも同時に作成。">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=M+PLUS+Rounded+1c:wght@700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f0f4ff;color:#1a1a2e;min-height:100vh;}
 
-  :root {
-    --primary: #0179E8;
-    --primary-dark: #005bbf;
-    --accent: #FFD600;
-    --bg: #f4f7fb;
-    --surface: #ffffff;
-    --text: #1a1a2e;
-    --muted: #6b7280;
-    --border: #dde3ee;
-    --success: #10b981;
-    --radius: 16px;
-    --shadow: 0 4px 24px rgba(1,121,232,0.10);
-  }
+/* ===== Header ===== */
+.header{background:linear-gradient(135deg,#225AD3,#0179E8);color:white;padding:22px 16px 18px;text-align:center;box-shadow:0 3px 16px rgba(34,90,211,.3);}
+.header h1{font-size:1.9rem;font-weight:900;letter-spacing:.06em;}
+.header p{font-size:.85rem;opacity:.88;margin-top:5px;}
+.header-actions{display:flex;gap:8px;justify-content:center;margin-top:13px;}
+.btn-hdr{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:white;padding:7px 16px;border-radius:20px;font-size:.78rem;cursor:pointer;transition:.2s;}
+.btn-hdr:hover{background:rgba(255,255,255,.3);}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ===== Trial Banner ===== */
+.trial-banner{background:#ff6b35;color:white;padding:9px;text-align:center;font-size:.83rem;font-weight:600;}
 
-  body {
-    font-family: 'Noto Sans JP', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+/* ===== Container ===== */
+.container{max-width:800px;margin:0 auto;padding:22px 16px;}
 
-  header {
-    background: linear-gradient(135deg, #0179E8 0%, #225AD3 100%);
-    color: white;
-    padding: 32px 20px 28px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 200px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 50%;
-  }
-  header::after {
-    content: '';
-    position: absolute;
-    bottom: -60px; left: -30px;
-    width: 160px; height: 160px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 50%;
-  }
-  .header-badge {
-    display: inline-block;
-    background: var(--accent);
-    color: #1a1a2e;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 99px;
-    margin-bottom: 12px;
-    letter-spacing: 0.08em;
-  }
-  header h1 {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-  }
-  header p {
-    font-size: 0.92rem;
-    opacity: 0.88;
-    line-height: 1.6;
-  }
+/* ===== Card ===== */
+.card{background:white;border-radius:16px;padding:26px;box-shadow:0 2px 18px rgba(0,0,0,.08);margin-bottom:20px;}
+.card-title{font-size:1rem;font-weight:700;color:#225AD3;margin-bottom:18px;display:flex;align-items:center;gap:6px;}
 
-  #trial-bar {
-    background: #fff8e1;
-    border-bottom: 2px solid var(--accent);
-    padding: 10px 20px;
-    text-align: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #7c5800;
-  }
+/* ===== Form ===== */
+.field-label{display:block;font-size:.82rem;font-weight:600;color:#444;margin:16px 0 5px;}
+.field-label:first-of-type{margin-top:0;}
+.badge-req{color:#e03;font-size:.72rem;margin-left:5px;}
+.badge-opt{color:#888;font-size:.72rem;margin-left:5px;}
 
-  main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 28px 16px 60px;
-  }
+input[type=text],input[type=url],textarea,select{
+  width:100%;padding:10px 13px;border:1.5px solid #dde3f5;border-radius:9px;
+  font-size:.9rem;font-family:inherit;color:#1a1a2e;transition:.2s;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#225AD3;box-shadow:0 0 0 3px rgba(34,90,211,.1);}
+textarea{resize:vertical;min-height:80px;}
 
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 24px 22px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-  }
-  .card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-title span.icon {
-    background: #e8f1fd;
-    border-radius: 8px;
-    width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
-  }
+/* Radio pills */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.pills input[type=radio]{display:none;}
+.pills label{
+  margin:0;padding:7px 14px;border:1.5px solid #dde3f5;border-radius:20px;
+  font-size:.8rem;cursor:pointer;transition:.2s;font-weight:500;color:#555;
+}
+.pills input[type=radio]:checked+label{background:#225AD3;border-color:#225AD3;color:white;}
 
-  .form-group { margin-bottom: 14px; }
-  label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-  input[type="text"],
-  input[type="url"],
-  textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 0.92rem;
-    background: #fafcff;
-    color: var(--text);
-    transition: border-color 0.2s;
-    outline: none;
-  }
-  input:focus, textarea:focus {
-    border-color: var(--primary);
-    background: #fff;
-  }
-  textarea { resize: vertical; min-height: 72px; }
+/* ===== Generate Button ===== */
+.btn-gen{
+  width:100%;padding:16px;background:linear-gradient(135deg,#225AD3,#0179E8);
+  color:white;border:none;border-radius:12px;font-size:1.05rem;font-weight:700;
+  cursor:pointer;transition:.2s;letter-spacing:.05em;margin-top:20px;
+}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(34,90,211,.35);}
+.btn-gen:active{transform:translateY(0);}
+.btn-gen:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none;}
 
-  .style-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-  }
-  .style-opt { position: relative; }
-  .style-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
-  .style-opt label {
-    display: block;
-    padding: 12px 8px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--muted);
-    background: #fafcff;
-    transition: all 0.2s;
-    line-height: 1.4;
-  }
-  .style-opt input:checked + label {
-    border-color: var(--primary);
-    background: #e8f1fd;
-    color: var(--primary);
-  }
-  .style-opt label .style-emoji {
-    display: block;
-    font-size: 1.5rem;
-    margin-bottom: 4px;
-  }
+/* ===== Paywall ===== */
+.paywall{
+  display:none;background:linear-gradient(135deg,#fff8e1,#fff3cd);
+  border:2px solid #D0A900;border-radius:16px;padding:30px;
+  text-align:center;margin-bottom:20px;
+}
+.paywall h3{color:#856404;font-size:1.1rem;margin-bottom:12px;}
+.paywall p{color:#6c5609;font-size:.88rem;line-height:1.8;margin-bottom:18px;}
+.btn-buy{
+  display:inline-block;background:#D0A900;color:white;
+  padding:14px 30px;border-radius:12px;font-size:1rem;font-weight:700;
+  text-decoration:none;margin-bottom:14px;transition:.2s;
+}
+.btn-buy:hover{background:#b8940a;}
+.pw-area{margin-top:16px;}
+.pw-area p{font-size:.78rem;color:#888;margin-bottom:8px;}
+.pw-area input{width:200px;padding:8px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:.85rem;margin-right:6px;}
+.btn-unlock{padding:8px 16px;background:#555;color:white;border:none;border-radius:8px;font-size:.85rem;cursor:pointer;}
 
-  .btn-generate {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, #0179E8, #225AD3);
-    color: white;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 14px rgba(1,121,232,0.30);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .btn-generate:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(1,121,232,0.35);
-  }
-  .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+/* ===== Output ===== */
+.output-section{display:none;}
+.tab-btns{display:flex;gap:8px;margin-bottom:18px;}
+.tab-btn{
+  flex:1;padding:10px;border:1.5px solid #dde3f5;background:white;
+  border-radius:9px;font-size:.85rem;font-weight:600;cursor:pointer;
+  color:#555;transition:.2s;
+}
+.tab-btn.active{background:#225AD3;border-color:#225AD3;color:white;}
 
-  .loading-area {
-    display: none;
-    text-align: center;
-    padding: 40px 20px;
-  }
-  .spinner {
-    width: 44px; height: 44px;
-    border: 4px solid #dde3ee;
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 16px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-area p { color: var(--muted); font-size: 0.9rem; }
+.output-box{
+  background:#f8faff;border:1.5px solid #dde3f5;border-radius:10px;
+  padding:18px;font-size:.88rem;line-height:1.85;white-space:pre-wrap;
+  word-break:break-word;max-height:520px;overflow-y:auto;margin-bottom:12px;
+}
+.mj-box{
+  background:#1a1a2e;color:#c8d8ff;border-radius:10px;
+  padding:18px;font-size:.82rem;line-height:1.75;white-space:pre-wrap;
+  word-break:break-word;margin-bottom:12px;font-family:'Courier New',monospace;
+}
+.char-count{font-size:.75rem;color:#888;text-align:right;margin-bottom:8px;}
 
-  #result-area { display: none; }
+.btn-copy{
+  background:#225AD3;color:white;border:none;padding:10px 20px;
+  border-radius:8px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.2s;
+}
+.btn-copy:hover{background:#0179E8;}
+.btn-copy.copied{background:#22c55e;}
 
-  .result-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    margin-bottom: 16px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-  }
-  .result-card-header {
-    background: linear-gradient(90deg, #e8f1fd, #f4f7fb);
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-  }
-  .result-card-header h3 { font-size: 0.88rem; font-weight: 700; color: var(--primary); }
-  .result-card-body { padding: 16px 18px; }
-  .result-text {
-    font-size: 0.88rem;
-    line-height: 1.9;
-    color: var(--text);
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
-  .result-title-text {
-    font-size: 1.1rem;
-    font-weight: 700;
-    line-height: 1.6;
-    color: var(--text);
-  }
-  .result-hashtags { display: flex; flex-wrap: wrap; gap: 8px; }
-  .hashtag-pill {
-    background: #e8f1fd;
-    color: var(--primary);
-    padding: 5px 12px;
-    border-radius: 99px;
-    font-size: 0.82rem;
-    font-weight: 700;
-  }
+/* ===== Loading ===== */
+.loading{text-align:center;padding:50px;color:#225AD3;font-size:.9rem;}
+.dots::after{content:'';animation:dots 1.5s infinite;}
+@keyframes dots{0%,20%{content:'';}40%{content:'.';}60%{content:'..';}80%,100%{content:'...'}}
 
-  .btn-copy {
-    padding: 6px 14px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .btn-copy:hover { background: var(--primary-dark); }
-  .btn-copy.copied { background: var(--success); }
+/* ===== Modal ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:16px;padding:28px;max-width:480px;width:90%;max-height:88vh;overflow-y:auto;}
+.modal h2{font-size:1.05rem;font-weight:700;margin-bottom:16px;color:#225AD3;}
+.modal-close{float:right;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#888;margin-top:-4px;}
+.btn-save{width:100%;padding:12px;background:#225AD3;color:white;border:none;border-radius:9px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:16px;transition:.2s;}
+.btn-save:hover{background:#0179E8;}
+.howto-section{margin-bottom:14px;}
+.howto-section strong{display:block;margin-bottom:4px;color:#225AD3;font-size:.88rem;}
+.howto-section p{font-size:.83rem;line-height:1.75;color:#555;}
 
-  .char-count {
-    display: inline-block;
-    background: #e8f1fd;
-    color: var(--primary);
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding: 2px 10px;
-    border-radius: 99px;
-    margin-left: 8px;
-  }
+/* ===== Seasonal Tag ===== */
+.season-tag{
+  display:inline-block;padding:4px 12px;border-radius:12px;
+  font-size:.72rem;font-weight:700;margin-left:10px;
+}
 
-  .paywall {
-    display: none;
-    background: linear-gradient(135deg, #fff8e1, #fff3cd);
-    border: 2px solid var(--accent);
-    border-radius: var(--radius);
-    padding: 28px 22px;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .paywall h2 { font-size: 1.2rem; font-weight: 900; margin-bottom: 10px; color: #7c5800; }
-  .paywall p { font-size: 0.88rem; color: #7c5800; margin-bottom: 18px; line-height: 1.7; }
-  .btn-stripe {
-    display: inline-block;
-    background: linear-gradient(135deg, #0179E8, #225AD3);
-    color: white;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    font-size: 1rem;
-    font-weight: 700;
-    padding: 14px 32px;
-    border-radius: 12px;
-    text-decoration: none;
-    box-shadow: 0 4px 14px rgba(1,121,232,0.30);
-    transition: all 0.2s;
-    margin-bottom: 10px;
-  }
-  .btn-stripe:hover { transform: translateY(-2px); }
+/* ===== Footer ===== */
+.footer{text-align:center;padding:24px;font-size:.75rem;color:#999;}
 
-  footer {
-    text-align: center;
-    padding: 24px 20px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    margin-top: 20px;
-  }
-
-  @media (max-width: 480px) {
-    header h1 { font-size: 1.7rem; }
-    .style-options { grid-template-columns: 1fr; }
-    .style-opt label { display: flex; align-items: center; gap: 10px; text-align: left; padding: 10px 14px; }
-    .style-opt label .style-emoji { margin-bottom: 0; }
-  }
+/* ===== Responsive ===== */
+@media(max-width:480px){
+  .header h1{font-size:1.45rem;}
+  .pills label{font-size:.75rem;padding:6px 10px;}
+  .btn-gen{font-size:.95rem;}
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-badge">✨ みっけシリーズ</div>
+<!-- ===== Header ===== -->
+<div class="header">
   <h1>📝 noteみっけ</h1>
-  <p>アプリ名とURLを入れるだけで<br>note販売記事をまるごとAI生成します</p>
-</header>
-
-<div id="trial-bar">🎁 無料トライアル：あと <span id="trial-count">3</span> 回使えます</div>
-
-<main>
-
-  <div class="card" id="input-area">
-    <div class="card-title">
-      <span class="icon">📌</span>
-      アプリ情報を入力してください
-    </div>
-
-    <div class="form-group">
-      <label>アプリ名（例：薬局SNSみっけ）</label>
-      <input type="text" id="app-name" placeholder="アプリ名を入力" maxlength="50">
-    </div>
-
-    <div class="form-group">
-      <label>アプリの説明（1〜2行でOK）</label>
-      <textarea id="app-desc" placeholder="例：薬剤師スタッフが毎日のSNS投稿をAIで自動生成できるツールです。"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>ターゲット読者（例：薬剤師、薬局スタッフ）</label>
-      <input type="text" id="target-reader" placeholder="誰に向けた記事ですか？" maxlength="40">
-    </div>
-
-    <div class="form-group">
-      <label>アプリURL</label>
-      <input type="url" id="app-url" placeholder="https://spc-jp.github.io/xxxx/">
-    </div>
-
-    <div class="form-group">
-      <label>Stripe決済URL（任意）</label>
-      <input type="url" id="stripe-url" placeholder="https://buy.stripe.com/xxxx">
-    </div>
-
-    <div class="form-group" style="margin-top:18px;">
-      <label>記事スタイルを選んでください</label>
-      <div class="style-options">
-        <div class="style-opt">
-          <input type="radio" name="style" id="style-a" value="A" checked>
-          <label for="style-a">
-            <span class="style-emoji">💬</span>
-            体験談型<br>（使ってみたら…）
-          </label>
-        </div>
-        <div class="style-opt">
-          <input type="radio" name="style" id="style-b" value="B">
-          <label for="style-b">
-            <span class="style-emoji">🔥</span>
-            問題解決型<br>（こんな悩みない？）
-          </label>
-        </div>
-        <div class="style-opt">
-          <input type="radio" name="style" id="style-c" value="C">
-          <label for="style-c">
-            <span class="style-emoji">📋</span>
-            機能紹介型<br>（できることを解説）
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-generate" id="gen-btn" onclick="generate()">
-      ✨ note記事をAI生成する
-    </button>
+  <p>アプリ名とコンセプトを入れるだけで、2500文字のnote記事を自動生成</p>
+  <div class="header-actions">
+    <button class="btn-hdr" onclick="openModal('howto')">📖 使い方</button>
+    <button class="btn-hdr" onclick="openModal('settings')">⚙️ 設定</button>
   </div>
+</div>
 
-  <div class="loading-area" id="loading-area">
-    <div class="spinner"></div>
-    <p>AIがnote記事を生成しています...<br>少しお待ちください（約20〜40秒）</p>
-  </div>
+<div id="trialBanner" class="trial-banner">🎁 無料で3回まで使えます！気に入ったらぜひご購入ください</div>
 
+<div class="container">
+
+  <!-- Paywall -->
   <div class="paywall" id="paywall">
-    <h2>🎉 無料トライアルを使い切りました！</h2>
-    <p>noteみっけは月額 <strong>¥2,980</strong> でご利用いただけます。<br>
-    毎月何本でもnote記事を量産できます✨</p>
-    <a href="https://buy.stripe.com/XXXX" class="btn-stripe" target="_blank" id="paywall-stripe-btn">
-      今すぐ申し込む（¥2,980/月）
-    </a>
-    <br>
-    <small style="color:#7c5800; font-size:0.78rem;">購入後にパスワードが届きます</small>
+    <h3>✨ 無料トライアルが終了しました</h3>
+    <p>3回の無料体験はいかがでしたか？<br>
+    引き続きご利用いただくには、月額プランへのご登録をお願いします。<br>
+    note記事をもっとラクに、もっと頻繁に発信しましょう😊</p>
+    <a href="#" id="buyLink" class="btn-buy" target="_blank">月額 ¥2,980 で使い続ける →</a>
+    <div class="pw-area">
+      <p>購入済みの方はパスワードを入力してください</p>
+      <input type="password" id="pwInput" placeholder="パスワード">
+      <button class="btn-unlock" onclick="checkPassword()">解除</button>
+    </div>
   </div>
 
-  <div id="result-area">
+  <!-- ===== Input Form ===== -->
+  <div class="card" id="inputCard">
+    <div class="card-title">📋 アプリ情報を入力してください</div>
 
-    <div class="result-card">
-      <div class="result-card-header">
-        <h3>📌 noteタイトル</h3>
-        <button class="btn-copy" onclick="copyText('out-title', this)">コピー</button>
-      </div>
-      <div class="result-card-body">
-        <div id="out-title" class="result-title-text"></div>
-      </div>
+    <label class="field-label">アプリ名<span class="badge-req">必須</span></label>
+    <input type="text" id="appName" placeholder="例：薬局SNSみっけ">
+
+    <label class="field-label">キャッチコピー・コンセプト<span class="badge-req">必須</span></label>
+    <input type="text" id="concept" placeholder="例：薬局スタッフのSNS投稿をAIがサポート">
+
+    <label class="field-label">アプリURL<span class="badge-req">必須</span></label>
+    <input type="url" id="appUrl" placeholder="例：https://spc-jp.github.io/yakkyoku-sns-mikke">
+
+    <label class="field-label">購入URL（Stripe）<span class="badge-opt">任意</span></label>
+    <input type="url" id="buyUrl" placeholder="例：https://buy.stripe.com/xxx">
+
+    <label class="field-label">読者ターゲット<span class="badge-req">必須</span></label>
+    <div class="pills">
+      <input type="radio" name="target" id="t1" value="中小企業の経営者" checked><label for="t1">中小企業の経営者</label>
+      <input type="radio" name="target" id="t2" value="士業（税理士・行政書士など）の先生"><label for="t2">士業の先生</label>
+      <input type="radio" name="target" id="t3" value="薬局・医療従事者"><label for="t3">薬局・医療従事者</label>
+      <input type="radio" name="target" id="t4" value="個人事業主・フリーランス"><label for="t4">個人事業主</label>
+      <input type="radio" name="target" id="t5" value="一般のビジネスパーソン"><label for="t5">一般ビジネスパーソン</label>
     </div>
 
-    <div class="result-card">
-      <div class="result-card-header">
-        <h3>📝 note本文 <span class="char-count" id="char-count">0文字</span></h3>
-        <button class="btn-copy" onclick="copyText('out-body', this)">コピー</button>
-      </div>
-      <div class="result-card-body">
-        <div id="out-body" class="result-text"></div>
-      </div>
+    <label class="field-label">記事の目的<span class="badge-req">必須</span></label>
+    <div class="pills">
+      <input type="radio" name="purpose" id="p1" value="信頼構築・ブランディング" checked><label for="p1">信頼構築・ブランディング</label>
+      <input type="radio" name="purpose" id="p2" value="お問い合わせ・集客獲得"><label for="p2">集客・お問い合わせ</label>
+      <input type="radio" name="purpose" id="p3" value="アプリの使い方・機能紹介"><label for="p3">使い方・機能紹介</label>
+      <input type="radio" name="purpose" id="p4" value="開発の想いや背景を伝える"><label for="p4">想い・開発背景</label>
     </div>
 
-    <div class="result-card">
-      <div class="result-card-header">
-        <h3>🏷️ ハッシュタグ（7つ）</h3>
-        <button class="btn-copy" onclick="copyText('out-tags-text', this)">コピー</button>
-      </div>
-      <div class="result-card-body">
-        <div id="out-tags" class="result-hashtags"></div>
-        <div id="out-tags-text" style="display:none;"></div>
-      </div>
+    <label class="field-label">文体・トーン<span class="badge-req">必須</span></label>
+    <div class="pills">
+      <input type="radio" name="tone" id="tone1" value="丁寧で読みやすいですます調" checked><label for="tone1">丁寧なですます調</label>
+      <input type="radio" name="tone" id="tone2" value="語りかけるような親近感のある文体"><label for="tone2">語りかけ・親近感</label>
+      <input type="radio" name="tone" id="tone3" value="実話風のストーリー仕立て"><label for="tone3">ストーリー実話風</label>
+      <input type="radio" name="tone" id="tone4" value="データや根拠を重視した解説調"><label for="tone4">データ・解説調</label>
     </div>
 
-    <div class="result-card">
-      <div class="result-card-header">
-        <h3>🎨 Midjourney V8 プロンプト</h3>
-        <button class="btn-copy" onclick="copyText('out-mj', this)">コピー</button>
-      </div>
-      <div class="result-card-body">
-        <div id="out-mj" class="result-text"></div>
-      </div>
+    <label class="field-label">構成パターン<span class="badge-req">必須</span></label>
+    <div class="pills">
+      <input type="radio" name="pattern" id="pat1" value="PREP型（結論→理由→事例→まとめ）" checked><label for="pat1">PREP型（結論から）</label>
+      <input type="radio" name="pattern" id="pat2" value="ストーリー型（悩み→気づき→変化→今）"><label for="pat2">ストーリー型（共感から）</label>
+      <input type="radio" name="pattern" id="pat3" value="ノウハウ型（見出し3本柱＋実践ステップ）"><label for="pat3">ノウハウ型（実践的）</label>
+      <input type="radio" name="pattern" id="pat4" value="問いかけ型（読者の悩みや疑問から入る）"><label for="pat4">問いかけ型（悩みから）</label>
     </div>
 
-    <button class="btn-generate" onclick="resetForm()"
-      style="background:linear-gradient(135deg,#6b7280,#4b5563);box-shadow:0 4px 14px rgba(107,114,128,0.30);">
-      🔄 新しい記事を作る
-    </button>
+    <label class="field-label">アピールポイント・エピソード<span class="badge-opt">任意</span></label>
+    <textarea id="episode" placeholder="例：実際に使ったスタッフから「毎日の投稿が5分で終わった」という声をいただきました。開発のきっかけは…"></textarea>
 
+    <label class="field-label">SEOキーワード<span class="badge-opt">任意・カンマ区切りで3つまで</span></label>
+    <input type="text" id="keywords" placeholder="例：薬局SNS, AIツール, 投稿自動化">
+
+    <button class="btn-gen" id="genBtn" onclick="generate()">✨ note記事とサムネイルプロンプトを生成する</button>
   </div>
 
-</main>
+  <!-- ===== Output ===== -->
+  <div class="output-section" id="outputSection">
+    <div class="card">
+      <div class="card-title">
+        📄 生成結果
+        <span class="season-tag" id="seasonTag" style="background:#fce7f3;color:#9d174d;"></span>
+      </div>
 
-<footer>
-  noteみっけ｜みっけシリーズ by Smile Plus Consulting<br>
-  「考えるを、ひとりにしない」
-</footer>
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab('article')">📝 note記事</button>
+        <button class="tab-btn" onclick="switchTab('mj')">🖼️ MJサムネイルプロンプト</button>
+      </div>
+
+      <!-- Article tab -->
+      <div id="tabArticle">
+        <div class="char-count" id="charCount"></div>
+        <div class="output-box" id="articleOut"></div>
+        <button class="btn-copy" onclick="copyText('articleOut',this,'📋 記事をコピー')">📋 記事をコピー</button>
+      </div>
+
+      <!-- MJ tab -->
+      <div id="tabMj" style="display:none;">
+        <div class="mj-box" id="mjOut"></div>
+        <button class="btn-copy" onclick="copyText('mjOut',this,'📋 プロンプトをコピー')">📋 プロンプトをコピー</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- ===== How-to Modal ===== -->
+<div class="modal-overlay" id="howtoModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('howto')">×</button>
+    <h2>📖 noteみっけの使い方</h2>
+    <div class="howto-section">
+      <strong>① アプリ情報を入力する</strong>
+      <p>紹介したいアプリの名前・コンセプト・URLを入力します。購入URLがあれば追加しておきましょう。</p>
+    </div>
+    <div class="howto-section">
+      <strong>② 目的と文体を選ぶ</strong>
+      <p>誰に読んでほしいか、どんな目的で書くか、文章の雰囲気を選びます。構成パターンはPREP型が万能です。</p>
+    </div>
+    <div class="howto-section">
+      <strong>③ 生成ボタンをクリック</strong>
+      <p>約2500文字のnote記事と、MidJourneyのサムネイルプロンプトが同時に生成されます。</p>
+    </div>
+    <div class="howto-section">
+      <strong>④ noteに貼り付ける</strong>
+      <p>「記事をコピー」してnoteのエディタに貼り付けてください。##見出しはnoteの目次設定に対応しています。</p>
+    </div>
+    <div class="howto-section">
+      <strong>⑤ サムネイルを作る</strong>
+      <p>「MJサムネイルプロンプト」タブのプロンプトをMidJourney V8に貼り付けてサムネイルを生成します。季節ごとに毎回違うカラーパレットを提案します🌸</p>
+    </div>
+    <button class="btn-save" onclick="closeModal('howto')">閉じる</button>
+  </div>
+</div>
+
+<!-- ===== Settings Modal ===== -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('settings')">×</button>
+    <h2>⚙️ 設定</h2>
+    <label class="field-label">API URL（Cloudflare Worker）</label>
+    <input type="url" id="setApiUrl" placeholder="https://yymmatsu.workers.dev/api">
+    <label class="field-label">購入URL（Stripe）</label>
+    <input type="url" id="setBuyUrl" placeholder="https://buy.stripe.com/xxx">
+    <label class="field-label">解除パスワード</label>
+    <input type="text" id="setPassword" placeholder="パスワードを設定">
+    <button class="btn-save" onclick="saveSettings()">💾 保存する</button>
+  </div>
+</div>
+
+<div class="footer">
+  <p>noteみっけ ｜ Powered by Smile Plus Consulting</p>
+  <p style="margin-top:4px;">考えるを、ひとりにしない｜© 2026 spc-jp</p>
+</div>
 
 <script>
-const WORKER_URL = 'https://note-mikke-api.yymmatsu.workers.dev';
-const FREE_LIMIT = 9999;
-const STORAGE_KEY = 'note_mikke_count';
+// ===========================
+//  定数・ストレージキー
+// ===========================
+const SK = 'note_mikke';
+const FREE_LIMIT = 3;
 
-function getCount() {
-  return parseInt(localStorage.getItem(STORAGE_KEY) || '0');
+// ===========================
+//  設定
+// ===========================
+function getSettings(){ return JSON.parse(localStorage.getItem(SK+'_s')||'{}'); }
+
+function saveSettings(){
+  const s = {
+    apiUrl: document.getElementById('setApiUrl').value.trim(),
+    buyUrl: document.getElementById('setBuyUrl').value.trim(),
+    password: document.getElementById('setPassword').value.trim()
+  };
+  localStorage.setItem(SK+'_s', JSON.stringify(s));
+  if(s.buyUrl) document.getElementById('buyLink').href = s.buyUrl;
+  closeModal('settings');
+  alert('設定を保存しました ✅');
 }
-function addCount() {
-  localStorage.setItem(STORAGE_KEY, getCount() + 1);
+
+function loadSettings(){
+  const s = getSettings();
+  if(s.apiUrl) document.getElementById('setApiUrl').value = s.apiUrl;
+  if(s.buyUrl){ document.getElementById('setBuyUrl').value = s.buyUrl; document.getElementById('buyLink').href = s.buyUrl; }
+  if(s.password) document.getElementById('setPassword').value = s.password;
 }
-function updateTrialBar() {
-  const remaining = Math.max(FREE_LIMIT - getCount(), 0);
-  document.getElementById('trial-count').textContent = remaining;
-  if (remaining <= 0) {
-    const bar = document.getElementById('trial-bar');
-    bar.style.background = '#fee2e2';
-    bar.style.color = '#991b1b';
-    bar.textContent = '⚠️ 無料トライアルを使い切りました（お申込みで継続利用できます）';
+
+// ===========================
+//  使用回数・解除管理
+// ===========================
+function getCount(){ return parseInt(localStorage.getItem(SK+'_c')||'0'); }
+function addCount(){ localStorage.setItem(SK+'_c', getCount()+1); }
+function isUnlocked(){ return localStorage.getItem(SK+'_u')==='true'; }
+function canUse(){ return isUnlocked() || getCount()<FREE_LIMIT; }
+
+function updateBanner(){
+  const rem = Math.max(0, FREE_LIMIT - getCount());
+  const el = document.getElementById('trialBanner');
+  if(isUnlocked()){ el.style.display='none'; return; }
+  if(rem > 0){ el.textContent = `🎁 無料で残り${rem}回使えます！気に入ったらぜひご購入ください`; }
+  else{ el.style.display='none'; showPaywall(); }
+}
+
+function showPaywall(){
+  document.getElementById('paywall').style.display='block';
+  document.getElementById('inputCard').style.display='none';
+}
+
+function checkPassword(){
+  const s = getSettings();
+  const pw = s.password || 'note2026';
+  if(document.getElementById('pwInput').value === pw){
+    localStorage.setItem(SK+'_u','true');
+    document.getElementById('paywall').style.display='none';
+    document.getElementById('inputCard').style.display='block';
+    document.getElementById('trialBanner').style.display='none';
+    alert('✅ 解除しました！引き続きご利用ください😊');
+  } else {
+    alert('パスワードが違います。購入後のメールをご確認ください。');
   }
 }
 
-function validate() {
-  const appName = document.getElementById('app-name').value.trim();
-  const appDesc = document.getElementById('app-desc').value.trim();
-  const target  = document.getElementById('target-reader').value.trim();
-  const appUrl  = document.getElementById('app-url').value.trim();
-  if (!appName) { alert('アプリ名を入力してください'); return false; }
-  if (!appDesc) { alert('アプリの説明を入力してください'); return false; }
-  if (!target)  { alert('ターゲット読者を入力してください'); return false; }
-  if (!appUrl)  { alert('アプリURLを入力してください'); return false; }
-  return true;
+// ===========================
+//  Modal
+// ===========================
+function openModal(n){ document.getElementById(n+'Modal').classList.add('open'); }
+function closeModal(n){ document.getElementById(n+'Modal').classList.remove('open'); }
+
+// ===========================
+//  Tab
+// ===========================
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active',(tab==='article')?(i===0):(i===1));
+  });
+  document.getElementById('tabArticle').style.display = tab==='article'?'block':'none';
+  document.getElementById('tabMj').style.display = tab==='mj'?'block':'none';
 }
 
-function buildPrompt() {
-  const appName   = document.getElementById('app-name').value.trim();
-  const appDesc   = document.getElementById('app-desc').value.trim();
-  const target    = document.getElementById('target-reader').value.trim();
-  const appUrl    = document.getElementById('app-url').value.trim();
-  const stripeUrl = document.getElementById('stripe-url').value.trim();
-  const styleVal  = document.querySelector('input[name="style"]:checked').value;
+// ===========================
+//  コピー
+// ===========================
+function copyText(id, btn, label){
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.textContent='✅ コピーしました！';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent=label; btn.classList.remove('copied'); },2200);
+  });
+}
 
-  const styleMap = {
-    A: '体験談型：「このアプリを使ってみたらこう変わった」という実体験ストーリー形式。感情の動きを大切に、読者が「自分もそうなれる」と感じる構成にする。',
-    B: '問題解決型：「こんな悩みありませんか？」と共感から入り、問題提起→原因分析→解決策→このアプリが答えだ、という流れで説得力を持たせる。',
-    C: '機能紹介型：アプリの機能を順番にわかりやすく解説する。見出しごとに機能を紹介し、使い方・メリット・こんな人向け、という構成で信頼感を高める。'
+// ===========================
+//  季節テーマ（毎回ランダム）
+// ===========================
+function getSeasonalTheme(){
+  const m = new Date().getMonth()+1;
+  const themes = {
+    spring:[
+      { name:'🌸 春・桜ピンク', palette:'soft pink sakura #ffb7c5 and cream white #fff8f0',
+        prompt:'Japanese spring cherry blossom background, soft pink sakura in full bloom with gentle warm light, delicate petals floating, pastel dreamlike atmosphere'},
+      { name:'🌿 春・新緑ミント', palette:'mint fresh green #b8f0c8 and sky blue #d4eeff',
+        prompt:'Japanese spring fresh green theme, new leaves sprouting under soft morning light, refreshing breeze, vibrant young green and pale blue sky'},
+      { name:'💜 春・藤紫', palette:'wisteria purple #c9b1ff and lavender mist #e8e0ff',
+        prompt:'Japanese spring wisteria theme, purple wisteria blooms hanging gracefully, soft lavender haze, ethereal romantic spring atmosphere'},
+    ],
+    summer:[
+      { name:'🌊 夏・海ブルー', palette:'deep turquoise #005f87 and coral accent #ff6b6b',
+        prompt:'Japanese summer ocean theme, bright turquoise sea under blazing sun, tropical blue water, energetic vibrant summer light'},
+      { name:'🎆 夏・祭りネイビー', palette:'deep navy #1a2744 and festival gold #ffd700',
+        prompt:'Japanese summer festival night theme, deep navy sky with lanterns and fireworks, warm golden glow, exciting summer matsuri atmosphere'},
+      { name:'🌿 夏・深緑', palette:'emerald deep green #00704a and lime #a8e063',
+        prompt:'Japanese summer forest theme, lush emerald mountain forest, cool refreshing green shade, vibrant summer energy with deep green tones'},
+    ],
+    autumn:[
+      { name:'🍁 秋・紅葉クリムゾン', palette:'crimson red #cc2929 and amber #f4a127',
+        prompt:'Japanese autumn maple theme, brilliant crimson red maple leaves, warm amber golden light, cozy nostalgic autumn forest atmosphere'},
+      { name:'🍊 秋・収穫オレンジ', palette:'harvest orange #f97316 and earth brown #6b3a2a',
+        prompt:'Japanese autumn harvest theme, rich pumpkin orange and warm brown tones, abundant harvest season, cozy comfortable autumn ambiance'},
+      { name:'🌕 秋・銀杏ゴールド', palette:'ginkgo yellow #fbbf24 and moss green #4a7c59',
+        prompt:'Japanese autumn ginkgo avenue theme, rows of golden yellow ginkgo trees, soft nostalgic dusk light, warm peaceful autumn evening'},
+    ],
+    winter:[
+      { name:'❄️ 冬・雪景色アイスブルー', palette:'ice blue #bae6fd and pure snow white #f0f9ff',
+        prompt:'Japanese winter snow theme, pristine white snowflakes gently falling, ice blue crystal clear sky, quiet serene pure winter landscape'},
+      { name:'🌃 冬・真夜中ネイビー', palette:'midnight navy #0f172a and silver star #cbd5e1',
+        prompt:'Japanese winter midnight theme, deep midnight navy starry sky, silver moonlight glistening on frost, crisp cold silent winter night'},
+      { name:'🌸 冬・梅ローズ', palette:'charcoal dark #1c1c1e and plum rose #fb7185',
+        prompt:'Japanese winter plum blossom theme, delicate pink plum flowers blooming in cold dark night, elegant resilience against winter, sophisticated subtle beauty'},
+    ]
   };
-
-  const stripeText = stripeUrl
-    ? `決済URL：${stripeUrl}（文末で月額料金と共に自然に紹介してください）`
-    : '（決済URLは省略してください）';
-
-  return `あなたはnoteのプロライターです。以下の情報をもとに、note販売記事を生成してください。
-
-必ず以下のJSON形式のみで返してください。説明文や前置きは一切不要です。
-
-{
-  "title": "クリックされやすいnoteタイトル（30〜45文字）",
-  "body": "note本文（2,400〜2,600文字。##大見出し4〜5個、小見出しあり。指定スタイルで書く）",
-  "hashtags": ["タグ1","タグ2","タグ3","タグ4","タグ5","タグ6","タグ7"],
-  "midjourney": "Midjourney V8用プロンプト"
+  let season;
+  if(m>=3&&m<=5) season='spring';
+  else if(m>=6&&m<=8) season='summer';
+  else if(m>=9&&m<=11) season='autumn';
+  else season='winter';
+  const opts = themes[season];
+  return opts[Math.floor(Math.random()*opts.length)];
 }
 
-【アプリ情報】
-・アプリ名：${appName}
-・説明：${appDesc}
-・ターゲット読者：${target}
-・アプリURL：${appUrl}
-・${stripeText}
+// ===========================
+//  メイン生成
+// ===========================
+async function generate(){
+  if(!canUse()){ showPaywall(); return; }
 
-【記事スタイル】
-${styleMap[styleVal]}
+  const appName = document.getElementById('appName').value.trim();
+  const concept = document.getElementById('concept').value.trim();
+  const appUrl  = document.getElementById('appUrl').value.trim();
+  const buyUrl  = document.getElementById('buyUrl').value.trim();
+  const target  = document.querySelector('input[name=target]:checked').value;
+  const purpose = document.querySelector('input[name=purpose]:checked').value;
+  const tone    = document.querySelector('input[name=tone]:checked').value;
+  const pattern = document.querySelector('input[name=pattern]:checked').value;
+  const episode = document.getElementById('episode').value.trim();
+  const keywords= document.getElementById('keywords').value.trim();
 
-【本文の構成ルール】
-・文字数：2,400〜2,600文字（厳守）
-・##大見出し を4〜5個使う（noteで目次が自動生成されます）
-・各セクションに自然な小見出しや改行を入れる
-・ですます調で書く
-・読者への語りかけを自然に含める
-・文末の##見出しセクションでアプリURLと決済URLへ優しく誘導する
-・「無料でお試しいただけます」「ぜひ一度使ってみてください」など柔らかい表現を使う
-
-【ハッシュタグのルール】
-・7つ
-・#を付けずに配列に入れる（例："AI活用"）
-・ターゲット読者・業種・ツールに関連するものを選ぶ
-
-【Midjourneyプロンプトのルール】
-・英語でプロンプトを書く
-・画像内に日本語テキストを含める場合、テキスト表現をプロンプトに明示する
-・明るくプロフェッショナルなビジュアル、ターゲット業種のイメージ
-・日本語タイトル：${appName} と日本語キャッチコピーをtext要素として含める
-・最終行に --ar 1200:630 --style raw --v 6.1 を付ける`;
-}
-
-async function generate() {
-  if (!validate()) return;
-
-  const count = getCount();
-  if (count >= FREE_LIMIT) {
-    document.getElementById('input-area').style.display = 'none';
-    document.getElementById('paywall').style.display = 'block';
+  if(!appName||!concept||!appUrl){
+    alert('アプリ名・コンセプト・URLは必須です✋');
     return;
   }
 
-  document.getElementById('gen-btn').disabled = true;
-  document.getElementById('input-area').style.pointerEvents = 'none';
-  document.getElementById('input-area').style.opacity = '0.5';
-  document.getElementById('loading-area').style.display = 'block';
-  document.getElementById('result-area').style.display = 'none';
+  const s = getSettings();
+  const apiUrl = s.apiUrl || 'https://yymmatsu.workers.dev/api';
+  const seasonal = getSeasonalTheme();
+
+  // UI更新
+  const btn = document.getElementById('genBtn');
+  btn.disabled=true; btn.textContent='⏳ 生成中です...少しお待ちください';
+  document.getElementById('outputSection').style.display='block';
+  document.getElementById('seasonTag').textContent = seasonal.name;
+  document.getElementById('articleOut').innerHTML='<div class="loading">✍️ note記事を生成中<span class="dots"></span></div>';
+  document.getElementById('mjOut').textContent='';
+  document.getElementById('charCount').textContent='';
+  switchTab('article');
+  document.getElementById('outputSection').scrollIntoView({behavior:'smooth'});
+
+  // ===== Article Prompt =====
+  const buySection = buyUrl
+    ? `・購入URLへの優しい誘導文（「よかったらこちらからどうぞ」程度の押しつけがましくない1〜2文）\n  購入URL：${buyUrl}`
+    : '';
+
+  const articlePrompt = `あなたはnoteで人気の記事を書くプロのライターです。
+以下の情報をもとに、約2500文字のnote記事を日本語で生成してください。
+
+【アプリ情報】
+アプリ名：${appName}
+コンセプト：${concept}
+アプリURL：${appUrl}
+読者ターゲット：${target}
+記事の目的：${purpose}
+文体・トーン：${tone}
+構成パターン：${pattern}
+${episode?'エピソード・アピールポイント：'+episode:''}
+${keywords?'SEOキーワード（自然に組み込む）：'+keywords:''}
+
+【出力形式】
+1行目：タイトル：短いサブタイトル
+（タイトル30文字以内・サブタイトル25文字以内、コロンで区切る）
+
+本文：
+- ## 大見出し を2〜3個使う
+- ### 小見出し を各大見出しの中に2〜3個使う
+- 合計で約2500文字の読み応えある内容にする
+- noteらしい親しみやすい文体で、最後まで読まれる記事にする
+
+【記事末尾に必ず含めること】
+・アプリURL（${appUrl}）への優しい誘導文（1〜2文、自然に）
+${buySection}
+・空行1行
+・ハッシュタグ7つを横並び（スペース区切り）
+  例：#AI活用 #中小企業支援 #${appName} ... ※関連性の高いものを選ぶ
+
+本文のみ出力してください。余計な前置きや説明は不要です。`;
+
+  // ===== MJ Prompt =====
+  const mjPrompt = `以下の情報をもとに、MidJourney V8用のサムネイル画像プロンプト（英語）を1つ生成してください。
+
+アプリ名（日本語テキストとして画像に入れる）：${appName}
+キャッチコピー（日本語テキストとして画像に入れる）：${concept}
+季節・カラーテーマ：${seasonal.prompt}
+カラーパレット参考：${seasonal.palette}
+
+必ず含める要素：
+- large bold white Japanese text "${appName}" prominently displayed in upper area
+- smaller white Japanese subtitle text "${concept}" below the title
+- ${seasonal.prompt}
+- sleek modern Japanese commercial design style
+- cinematic lighting, photorealistic quality
+- ultra sharp crisp text rendering
+- professional thumbnail composition, 8k quality
+- --ar 16:9 --v 8
+
+プロンプト本文のみ出力してください。説明不要です。`;
 
   try {
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 5000,
-        messages: [{ role: 'user', content: buildPrompt() }]
+    // 記事生成
+    const r1 = await fetch(apiUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-haiku-4-5',
+        max_tokens:4096,
+        messages:[{role:'user',content:articlePrompt}]
       })
     });
+    const d1 = await r1.json();
+    const articleText = d1.content?.[0]?.text || 'エラーが発生しました。API URLの設定を確認してください。';
 
-    if (!response.ok) throw new Error('APIエラー: ' + response.status);
+    // MJプロンプト生成
+    const r2 = await fetch(apiUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-haiku-4-5',
+        max_tokens:1024,
+        messages:[{role:'user',content:mjPrompt}]
+      })
+    });
+    const d2 = await r2.json();
+    const mjText = d2.content?.[0]?.text || 'エラーが発生しました。';
 
-    const data = await response.json();
-    const rawText = data.content[0].text;
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('JSON形式で返ってきませんでした');
-    const result = JSON.parse(jsonMatch[0]);
+    document.getElementById('articleOut').textContent = articleText;
+    document.getElementById('mjOut').textContent = mjText;
 
-    renderResult(result);
+    // 文字数表示
+    const bodyText = articleText.replace(/^.+：.+\n/,'').replace(/#[^\s]+/g,'').trim();
+    document.getElementById('charCount').textContent = `📊 本文文字数：約${bodyText.length.toLocaleString()}文字`;
+
     addCount();
-    updateTrialBar();
+    updateBanner();
 
-  } catch (err) {
-    alert('エラーが発生しました: ' + err.message);
+  } catch(err){
+    document.getElementById('articleOut').textContent =
+      'エラーが発生しました。\n\n⚙️ 設定からAPI URLを確認してください。\n\n詳細：'+err.message;
   } finally {
-    document.getElementById('gen-btn').disabled = false;
-    document.getElementById('input-area').style.pointerEvents = '';
-    document.getElementById('input-area').style.opacity = '';
-    document.getElementById('loading-area').style.display = 'none';
+    btn.disabled=false;
+    btn.textContent='✨ note記事とサムネイルプロンプトを生成する';
   }
 }
 
-function renderResult(result) {
-  document.getElementById('out-title').textContent = result.title || '';
+// ===========================
+//  初期化
+// ===========================
+loadSettings();
+updateBanner();
 
-  const body = result.body || '';
-  document.getElementById('out-body').textContent = body;
-  document.getElementById('char-count').textContent = body.length + '文字';
-
-  const tags = result.hashtags || [];
-  const tagsContainer = document.getElementById('out-tags');
-  tagsContainer.innerHTML = '';
-  tags.forEach(tag => {
-    const pill = document.createElement('div');
-    pill.className = 'hashtag-pill';
-    pill.textContent = '#' + tag;
-    tagsContainer.appendChild(pill);
-  });
-  document.getElementById('out-tags-text').textContent = tags.map(t => '#' + t).join(' ');
-
-  document.getElementById('out-mj').textContent = result.midjourney || '';
-
-  document.getElementById('result-area').style.display = 'block';
-  setTimeout(() => {
-    document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
-}
-
-function copyText(elementId, btn) {
-  const text = document.getElementById(elementId).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '✅ コピー済';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'コピー';
-      btn.classList.remove('copied');
-    }, 2000);
-  });
-}
-
-function resetForm() {
-  document.getElementById('result-area').style.display = 'none';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-updateTrialBar();
+// モーダル外クリックで閉じる
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click', e=>{ if(e.target===el) el.classList.remove('open'); });
+});
 </script>
 </body>
 </html>
