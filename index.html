@@ -379,7 +379,7 @@ async function generate(){
   switchTab('article');
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth'});
 
-  const buySection=buyUrl?`・購入URLへの自然な誘導文（押しつけがましくない1〜2文）\n  購入URL：${buyUrl}`:'';
+  const buySection=buyUrl?`・購入URLへの自然な誘導文（押しつけがましくない1〜2文）\n  ※リンクは以下のいずれかの形式で記載してください。\n  👉 購入はこちら： ${buyUrl}\n  🛒 購入はこちら： ${buyUrl}`:'';
 
   const ap=`あなたはnoteで人気の記事を書くプロのライターです。以下の情報をもとに、約2500文字のnote記事を日本語で生成してください。
 
@@ -404,7 +404,10 @@ ${keywords?'SEOキーワード：'+keywords:''}
 ・noteらしい親しみやすい文体
 
 【記事末尾に必ず含めること】
-・アプリURL（${appUrl}）への優しい誘導文（1〜2文）
+・アプリURLへの優しい誘導文（1〜2文）
+  ※リンクは以下のいずれかの形式で記載してください。
+  🔍 アプリはこちらでチェック： ${appUrl}
+  📲 アプリはこちらから： ${appUrl}
 ${buySection}
 ・空行
 ・ハッシュタグ7つ横並び（スペース区切り）
