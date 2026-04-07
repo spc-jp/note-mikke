@@ -16,8 +16,6 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f0f4ff;color:#1
 .btn-hdr{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:white;padding:7px 16px;border-radius:20px;font-size:.78rem;cursor:pointer;transition:.2s;}
 .btn-hdr:hover{background:rgba(255,255,255,.3);}
 
-.trial-banner{background:#ff6b35;color:white;padding:9px;text-align:center;font-size:.83rem;font-weight:600;}
-
 .container{max-width:800px;margin:0 auto;padding:22px 16px;}
 
 .card{background:white;border-radius:16px;padding:26px;box-shadow:0 2px 18px rgba(0,0,0,.08);margin-bottom:20px;}
@@ -27,14 +25,16 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f0f4ff;color:#1
 .field-label:first-of-type{margin-top:0;}
 .badge-req{color:#e03;font-size:.72rem;margin-left:5px;}
 .badge-opt{color:#888;font-size:.72rem;margin-left:5px;}
+.badge-multi{color:#0179E8;font-size:.72rem;margin-left:5px;}
 
-input[type=text],input[type=url],input[type=password],textarea{
+input[type=text],input[type=url],textarea{
   width:100%;padding:10px 13px;border:1.5px solid #dde3f5;border-radius:9px;
   font-size:.9rem;font-family:inherit;color:#1a1a2e;transition:.2s;
 }
 input:focus,textarea:focus{outline:none;border-color:#225AD3;box-shadow:0 0 0 3px rgba(34,90,211,.1);}
 textarea{resize:vertical;min-height:80px;}
 
+/* ラジオボタン pill */
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
 .pills input[type=radio]{display:none;}
 .pills label{
@@ -42,6 +42,23 @@ textarea{resize:vertical;min-height:80px;}
   font-size:.8rem;cursor:pointer;transition:.2s;font-weight:500;color:#555;
 }
 .pills input[type=radio]:checked+label{background:#225AD3;border-color:#225AD3;color:white;}
+
+/* チェックボックス pill（ターゲット用） */
+.check-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.check-pills input[type=checkbox]{display:none;}
+.check-pills label{
+  margin:0;padding:7px 14px;border:1.5px solid #dde3f5;border-radius:20px;
+  font-size:.8rem;cursor:pointer;transition:.2s;font-weight:500;color:#555;
+  user-select:none;
+}
+.check-pills input[type=checkbox]:checked+label{
+  background:#0179E8;border-color:#0179E8;color:white;
+}
+.check-pills label:hover{border-color:#0179E8;color:#0179E8;}
+
+/* カテゴリ区切り */
+.target-group{margin-bottom:10px;}
+.target-group-label{font-size:.74rem;color:#999;font-weight:600;letter-spacing:.05em;margin-bottom:5px;display:block;}
 
 .btn-gen{
   width:100%;padding:16px;background:linear-gradient(135deg,#225AD3,#0179E8);
@@ -51,25 +68,6 @@ textarea{resize:vertical;min-height:80px;}
 .btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(34,90,211,.35);}
 .btn-gen:active{transform:translateY(0);}
 .btn-gen:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none;}
-
-.paywall{
-  display:none;background:linear-gradient(135deg,#fff8e1,#fff3cd);
-  border:2px solid #D0A900;border-radius:16px;padding:30px;
-  text-align:center;margin-bottom:20px;
-}
-.paywall h3{color:#856404;font-size:1.1rem;margin-bottom:12px;}
-.paywall p{color:#6c5609;font-size:.88rem;line-height:1.8;margin-bottom:18px;}
-.btn-buy{
-  display:inline-block;background:#D0A900;color:white;
-  padding:14px 30px;border-radius:12px;font-size:1rem;font-weight:700;
-  text-decoration:none;margin-bottom:14px;transition:.2s;
-}
-.btn-buy:hover{background:#b8940a;}
-.pw-area{margin-top:16px;}
-.pw-area p{font-size:.78rem;color:#888;margin-bottom:8px;}
-.pw-row{display:flex;gap:8px;justify-content:center;align-items:center;}
-.pw-row input{width:200px;padding:8px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:.85rem;}
-.btn-unlock{padding:8px 16px;background:#555;color:white;border:none;border-radius:8px;font-size:.85rem;cursor:pointer;white-space:nowrap;}
 
 .output-section{display:none;}
 .tab-btns{display:flex;gap:8px;margin-bottom:18px;}
@@ -119,11 +117,16 @@ textarea{resize:vertical;min-height:80px;}
   font-size:.72rem;font-weight:700;margin-left:10px;
 }
 
+.alert-box{
+  background:#fff3cd;border:1.5px solid #ffc107;border-radius:9px;
+  padding:10px 14px;font-size:.82rem;color:#856404;margin-top:8px;display:none;
+}
+
 .footer{text-align:center;padding:24px;font-size:.75rem;color:#999;}
 
 @media(max-width:480px){
   .header h1{font-size:1.45rem;}
-  .pills label{font-size:.75rem;padding:6px 10px;}
+  .check-pills label{font-size:.75rem;padding:6px 10px;}
   .btn-gen{font-size:.95rem;}
 }
 </style>
@@ -138,25 +141,7 @@ textarea{resize:vertical;min-height:80px;}
   </div>
 </div>
 
-<div id="trialBanner" class="trial-banner">🎁 無料で3回まで使えます！気に入ったらぜひご購入ください</div>
-
 <div class="container">
-
-  <!-- ペイウォール -->
-  <div class="paywall" id="paywall">
-    <h3>✨ 無料トライアルが終了しました</h3>
-    <p>3回の無料体験はいかがでしたか？<br>
-    引き続きご利用いただくには、月額プランへのご登録をお願いします。<br>
-    note記事をもっとラクに、もっと頻繁に発信しましょう😊</p>
-    <a href="#" id="buyLink" class="btn-buy" target="_blank">月額 ¥2,980 で使い続ける →</a>
-    <div class="pw-area">
-      <p>購入済みの方はパスワードを入力してください</p>
-      <div class="pw-row">
-        <input type="password" id="pwInput" placeholder="パスワード">
-        <button class="btn-unlock" onclick="checkPassword()">解除</button>
-      </div>
-    </div>
-  </div>
 
   <!-- 入力フォーム -->
   <div class="card" id="inputCard">
@@ -174,14 +159,61 @@ textarea{resize:vertical;min-height:80px;}
     <label class="field-label">購入URL（Stripe）<span class="badge-opt">任意</span></label>
     <input type="url" id="buyUrl" placeholder="例：https://buy.stripe.com/xxx">
 
-    <label class="field-label">読者ターゲット<span class="badge-req">必須</span></label>
-    <div class="pills">
-      <input type="radio" name="target" id="t1" value="中小企業の経営者" checked><label for="t1">中小企業の経営者</label>
-      <input type="radio" name="target" id="t2" value="士業（税理士・行政書士など）の先生"><label for="t2">士業の先生</label>
-      <input type="radio" name="target" id="t3" value="薬局・医療従事者"><label for="t3">薬局・医療従事者</label>
-      <input type="radio" name="target" id="t4" value="個人事業主・フリーランス"><label for="t4">個人事業主</label>
-      <input type="radio" name="target" id="t5" value="一般のビジネスパーソン"><label for="t5">一般ビジネスパーソン</label>
+    <!-- ターゲット（複数選択） -->
+    <label class="field-label">読者ターゲット<span class="badge-req">必須</span><span class="badge-multi">複数選択OK</span></label>
+
+    <div class="target-group">
+      <span class="target-group-label">🏢 ビジネス系</span>
+      <div class="check-pills">
+        <input type="checkbox" id="tg1" value="中小企業の経営者"><label for="tg1">中小企業の経営者</label>
+        <input type="checkbox" id="tg2" value="個人事業主・フリーランス"><label for="tg2">個人事業主・フリーランス</label>
+        <input type="checkbox" id="tg3" value="一般のビジネスパーソン"><label for="tg3">一般ビジネスパーソン</label>
+        <input type="checkbox" id="tg4" value="スタートアップ・ベンチャー経営者"><label for="tg4">スタートアップ経営者</label>
+      </div>
     </div>
+
+    <div class="target-group">
+      <span class="target-group-label">⚖️ 士業・専門職</span>
+      <div class="check-pills">
+        <input type="checkbox" id="tg5" value="税理士・会計士の先生"><label for="tg5">税理士・会計士</label>
+        <input type="checkbox" id="tg6" value="行政書士・社労士の先生"><label for="tg6">行政書士・社労士</label>
+        <input type="checkbox" id="tg7" value="弁護士・法律の専門家"><label for="tg7">弁護士・法律家</label>
+        <input type="checkbox" id="tg8" value="薬剤師・医療従事者"><label for="tg8">薬剤師・医療従事者</label>
+      </div>
+    </div>
+
+    <div class="target-group">
+      <span class="target-group-label">🏪 業種特化</span>
+      <div class="check-pills">
+        <input type="checkbox" id="tg9" value="飲食店・飲食業の経営者"><label for="tg9">飲食店・飲食業</label>
+        <input type="checkbox" id="tg10" value="美容サロン・美容業の経営者"><label for="tg10">美容サロン・美容業</label>
+        <input type="checkbox" id="tg11" value="製造業・ものづくり企業の経営者"><label for="tg11">製造業・ものづくり</label>
+        <input type="checkbox" id="tg12" value="小売店・EC事業者"><label for="tg12">小売店・EC事業者</label>
+      </div>
+    </div>
+
+    <div class="target-group">
+      <span class="target-group-label">🌏 インバウンド・観光系</span>
+      <div class="check-pills">
+        <input type="checkbox" id="tg13" value="訪日外国人向けサービスを運営する事業者"><label for="tg13">インバウンド事業者</label>
+        <input type="checkbox" id="tg14" value="観光業・旅館・ホテルの経営者"><label for="tg14">観光業・宿泊業</label>
+        <input type="checkbox" id="tg15" value="多言語対応が必要な飲食店や店舗"><label for="tg15">多言語対応店舗</label>
+        <input type="checkbox" id="tg16" value="地域観光・地方創生に取り組む自治体や団体"><label for="tg16">地域観光・地方創生</label>
+        <input type="checkbox" id="tg17" value="通訳・翻訳・ガイド業の方"><label for="tg17">通訳・翻訳・ガイド</label>
+      </div>
+    </div>
+
+    <div class="target-group">
+      <span class="target-group-label">🌱 その他</span>
+      <div class="check-pills">
+        <input type="checkbox" id="tg18" value="AIツールに興味のある方全般"><label for="tg18">AIツール興味層</label>
+        <input type="checkbox" id="tg19" value="副業・複業に挑戦中の会社員"><label for="tg19">副業・複業挑戦者</label>
+        <input type="checkbox" id="tg20" value="シニア世代の経営者・起業家"><label for="tg20">シニア経営者・起業家</label>
+        <input type="checkbox" id="tg21" value="地方の中小企業や商店"><label for="tg21">地方の中小企業・商店</label>
+      </div>
+    </div>
+
+    <div class="alert-box" id="targetAlert">⚠️ 読者ターゲットを1つ以上選択してください</div>
 
     <label class="field-label">記事の目的<span class="badge-req">必須</span></label>
     <div class="pills">
@@ -254,19 +286,23 @@ textarea{resize:vertical;min-height:80px;}
       <p>紹介したいアプリの名前・コンセプト・URLを入力します。購入URLがあれば追加しておきましょう。</p>
     </div>
     <div class="howto-section">
-      <strong>② 目的と文体を選ぶ</strong>
-      <p>誰に読んでほしいか、どんな目的で書くか、文章の雰囲気を選びます。</p>
+      <strong>② 読者ターゲットを選ぶ（複数OK）</strong>
+      <p>届けたい読者を複数タップして選べます。インバウンド・観光系も選択できます。</p>
     </div>
     <div class="howto-section">
-      <strong>③ 生成ボタンをクリック</strong>
+      <strong>③ 目的・文体・構成を選ぶ</strong>
+      <p>どんな目的で書くか、文章の雰囲気、記事の構成パターンを選びます。</p>
+    </div>
+    <div class="howto-section">
+      <strong>④ 生成ボタンをクリック</strong>
       <p>約2500文字のnote記事と、MidJourneyのサムネイルプロンプトが同時に生成されます。</p>
     </div>
     <div class="howto-section">
-      <strong>④ noteに貼り付ける</strong>
+      <strong>⑤ noteに貼り付ける</strong>
       <p>「記事をコピー」してnoteのエディタに貼り付けてください。##見出しはnoteの目次設定に対応しています。</p>
     </div>
     <div class="howto-section">
-      <strong>⑤ サムネイルを作る</strong>
+      <strong>⑥ サムネイルを作る</strong>
       <p>MJプロンプトタブのプロンプトをMidJourney V8に貼り付けてサムネイルを生成します🌸</p>
     </div>
     <button class="btn-save" onclick="closeModal('howto')">閉じる</button>
@@ -282,50 +318,8 @@ textarea{resize:vertical;min-height:80px;}
 // ===========================
 //  固定設定（変更不要）
 // ===========================
-const API_URL    = 'https://yymmatsu.workers.dev/api';
-const BUY_URL    = 'https://buy.stripe.com/xxx'; // ← Stripeリンクに変更してください
-const PASSWORD   = 'note2026';                   // ← 購入者向けパスワード
-const FREE_LIMIT = 3;
-const SK         = 'note_mikke';
-
-// ===========================
-//  使用回数・解除管理
-// ===========================
-function getCount(){ return parseInt(localStorage.getItem(SK+'_c')||'0'); }
-function addCount(){ localStorage.setItem(SK+'_c', getCount()+1); }
-function isUnlocked(){ return localStorage.getItem(SK+'_u')==='true'; }
-function canUse(){ return isUnlocked() || getCount()<FREE_LIMIT; }
-
-function updateBanner(){
-  const rem = Math.max(0, FREE_LIMIT - getCount());
-  const el = document.getElementById('trialBanner');
-  if(isUnlocked()){ el.style.display='none'; return; }
-  if(rem > 0){
-    el.textContent = `🎁 無料で残り${rem}回使えます！気に入ったらぜひご購入ください`;
-  } else {
-    el.style.display='none';
-    showPaywall();
-  }
-}
-
-function showPaywall(){
-  document.getElementById('buyLink').href = BUY_URL;
-  document.getElementById('paywall').style.display='block';
-  document.getElementById('inputCard').style.display='none';
-}
-
-function checkPassword(){
-  const val = document.getElementById('pwInput').value;
-  if(val === PASSWORD){
-    localStorage.setItem(SK+'_u','true');
-    document.getElementById('paywall').style.display='none';
-    document.getElementById('inputCard').style.display='block';
-    document.getElementById('trialBanner').style.display='none';
-    alert('✅ 解除しました！引き続きご利用ください😊');
-  } else {
-    alert('パスワードが違います。購入後のメールをご確認ください。');
-  }
-}
+const API_URL  = 'https://yymmatsu.workers.dev/api';
+const BUY_URL  = 'https://buy.stripe.com/xxx'; // ← 販売時にStripeリンクへ変更
 
 // ===========================
 //  Modal
@@ -356,6 +350,14 @@ function copyText(id, btn, label){
     btn.classList.add('copied');
     setTimeout(()=>{ btn.textContent=label; btn.classList.remove('copied'); },2200);
   });
+}
+
+// ===========================
+//  ターゲット取得（複数）
+// ===========================
+function getTargets(){
+  const checked = document.querySelectorAll('.check-pills input[type=checkbox]:checked');
+  return Array.from(checked).map(el=>el.value);
 }
 
 // ===========================
@@ -410,24 +412,31 @@ function getSeasonalTheme(){
 //  メイン生成
 // ===========================
 async function generate(){
-  if(!canUse()){ showPaywall(); return; }
-
   const appName = document.getElementById('appName').value.trim();
   const concept = document.getElementById('concept').value.trim();
   const appUrl  = document.getElementById('appUrl').value.trim();
   const buyUrl  = document.getElementById('buyUrl').value.trim();
-  const target  = document.querySelector('input[name=target]:checked').value;
+  const targets = getTargets();
   const purpose = document.querySelector('input[name=purpose]:checked').value;
   const tone    = document.querySelector('input[name=tone]:checked').value;
   const pattern = document.querySelector('input[name=pattern]:checked').value;
   const episode = document.getElementById('episode').value.trim();
   const keywords= document.getElementById('keywords').value.trim();
 
+  // バリデーション
+  const alert = document.getElementById('targetAlert');
   if(!appName||!concept||!appUrl){
     alert('アプリ名・コンセプト・URLは必須です✋');
     return;
   }
+  if(targets.length === 0){
+    alert.style.display='block';
+    alert.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  alert.style.display='none';
 
+  const targetText = targets.join('、');
   const seasonal = getSeasonalTheme();
 
   const btn = document.getElementById('genBtn');
@@ -452,7 +461,7 @@ async function generate(){
 アプリ名：${appName}
 コンセプト：${concept}
 アプリURL：${appUrl}
-読者ターゲット：${target}
+読者ターゲット：${targetText}
 記事の目的：${purpose}
 文体・トーン：${tone}
 構成パターン：${pattern}
@@ -468,6 +477,7 @@ ${keywords?'SEOキーワード（自然に組み込む）：'+keywords:''}
 ・### 小見出し を各大見出しの中に2〜3個使う
 ・合計で約2500文字の読み応えある内容にする
 ・noteらしい親しみやすい文体で、最後まで読まれる記事にする
+・複数のターゲット（${targetText}）それぞれに響く表現を意識する
 
 【記事末尾に必ず含めること】
 ・アプリURL（${appUrl}）への優しい誘導文（1〜2文、自然に）
@@ -530,9 +540,6 @@ ${buySection}
     const bodyLen = articleText.replace(/^.+：.+\n/,'').replace(/#[^\s]+/g,'').trim().length;
     document.getElementById('charCount').textContent = `📊 本文文字数：約${bodyLen.toLocaleString()}文字`;
 
-    addCount();
-    updateBanner();
-
   } catch(err){
     document.getElementById('articleOut').textContent =
       'エラーが発生しました。\n\nWorker（yymmatsu.workers.dev）が動いているか確認してください。\n\n詳細：'+err.message;
@@ -541,11 +548,6 @@ ${buySection}
     btn.textContent='✨ note記事とサムネイルプロンプトを生成する';
   }
 }
-
-// ===========================
-//  初期化
-// ===========================
-updateBanner();
 </script>
 </body>
 </html>
