@@ -9,7 +9,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f0f4ff;color:#1a1a2e;min-height:100vh;}
 
-/* ===== Header ===== */
 .header{background:linear-gradient(135deg,#225AD3,#0179E8);color:white;padding:22px 16px 18px;text-align:center;box-shadow:0 3px 16px rgba(34,90,211,.3);}
 .header h1{font-size:1.9rem;font-weight:900;letter-spacing:.06em;}
 .header p{font-size:.85rem;opacity:.88;margin-top:5px;}
@@ -17,30 +16,25 @@ body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f0f4ff;color:#1
 .btn-hdr{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:white;padding:7px 16px;border-radius:20px;font-size:.78rem;cursor:pointer;transition:.2s;}
 .btn-hdr:hover{background:rgba(255,255,255,.3);}
 
-/* ===== Trial Banner ===== */
 .trial-banner{background:#ff6b35;color:white;padding:9px;text-align:center;font-size:.83rem;font-weight:600;}
 
-/* ===== Container ===== */
 .container{max-width:800px;margin:0 auto;padding:22px 16px;}
 
-/* ===== Card ===== */
 .card{background:white;border-radius:16px;padding:26px;box-shadow:0 2px 18px rgba(0,0,0,.08);margin-bottom:20px;}
 .card-title{font-size:1rem;font-weight:700;color:#225AD3;margin-bottom:18px;display:flex;align-items:center;gap:6px;}
 
-/* ===== Form ===== */
 .field-label{display:block;font-size:.82rem;font-weight:600;color:#444;margin:16px 0 5px;}
 .field-label:first-of-type{margin-top:0;}
 .badge-req{color:#e03;font-size:.72rem;margin-left:5px;}
 .badge-opt{color:#888;font-size:.72rem;margin-left:5px;}
 
-input[type=text],input[type=url],textarea,select{
+input[type=text],input[type=url],input[type=password],textarea{
   width:100%;padding:10px 13px;border:1.5px solid #dde3f5;border-radius:9px;
   font-size:.9rem;font-family:inherit;color:#1a1a2e;transition:.2s;
 }
-input:focus,textarea:focus,select:focus{outline:none;border-color:#225AD3;box-shadow:0 0 0 3px rgba(34,90,211,.1);}
+input:focus,textarea:focus{outline:none;border-color:#225AD3;box-shadow:0 0 0 3px rgba(34,90,211,.1);}
 textarea{resize:vertical;min-height:80px;}
 
-/* Radio pills */
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
 .pills input[type=radio]{display:none;}
 .pills label{
@@ -49,7 +43,6 @@ textarea{resize:vertical;min-height:80px;}
 }
 .pills input[type=radio]:checked+label{background:#225AD3;border-color:#225AD3;color:white;}
 
-/* ===== Generate Button ===== */
 .btn-gen{
   width:100%;padding:16px;background:linear-gradient(135deg,#225AD3,#0179E8);
   color:white;border:none;border-radius:12px;font-size:1.05rem;font-weight:700;
@@ -59,7 +52,6 @@ textarea{resize:vertical;min-height:80px;}
 .btn-gen:active{transform:translateY(0);}
 .btn-gen:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none;}
 
-/* ===== Paywall ===== */
 .paywall{
   display:none;background:linear-gradient(135deg,#fff8e1,#fff3cd);
   border:2px solid #D0A900;border-radius:16px;padding:30px;
@@ -75,10 +67,10 @@ textarea{resize:vertical;min-height:80px;}
 .btn-buy:hover{background:#b8940a;}
 .pw-area{margin-top:16px;}
 .pw-area p{font-size:.78rem;color:#888;margin-bottom:8px;}
-.pw-area input{width:200px;padding:8px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:.85rem;margin-right:6px;}
-.btn-unlock{padding:8px 16px;background:#555;color:white;border:none;border-radius:8px;font-size:.85rem;cursor:pointer;}
+.pw-row{display:flex;gap:8px;justify-content:center;align-items:center;}
+.pw-row input{width:200px;padding:8px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:.85rem;}
+.btn-unlock{padding:8px 16px;background:#555;color:white;border:none;border-radius:8px;font-size:.85rem;cursor:pointer;white-space:nowrap;}
 
-/* ===== Output ===== */
 .output-section{display:none;}
 .tab-btns{display:flex;gap:8px;margin-bottom:18px;}
 .tab-btn{
@@ -107,12 +99,10 @@ textarea{resize:vertical;min-height:80px;}
 .btn-copy:hover{background:#0179E8;}
 .btn-copy.copied{background:#22c55e;}
 
-/* ===== Loading ===== */
 .loading{text-align:center;padding:50px;color:#225AD3;font-size:.9rem;}
 .dots::after{content:'';animation:dots 1.5s infinite;}
 @keyframes dots{0%,20%{content:'';}40%{content:'.';}60%{content:'..';}80%,100%{content:'...'}}
 
-/* ===== Modal ===== */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:white;border-radius:16px;padding:28px;max-width:480px;width:90%;max-height:88vh;overflow-y:auto;}
@@ -124,16 +114,13 @@ textarea{resize:vertical;min-height:80px;}
 .howto-section strong{display:block;margin-bottom:4px;color:#225AD3;font-size:.88rem;}
 .howto-section p{font-size:.83rem;line-height:1.75;color:#555;}
 
-/* ===== Seasonal Tag ===== */
 .season-tag{
   display:inline-block;padding:4px 12px;border-radius:12px;
   font-size:.72rem;font-weight:700;margin-left:10px;
 }
 
-/* ===== Footer ===== */
 .footer{text-align:center;padding:24px;font-size:.75rem;color:#999;}
 
-/* ===== Responsive ===== */
 @media(max-width:480px){
   .header h1{font-size:1.45rem;}
   .pills label{font-size:.75rem;padding:6px 10px;}
@@ -143,13 +130,11 @@ textarea{resize:vertical;min-height:80px;}
 </head>
 <body>
 
-<!-- ===== Header ===== -->
 <div class="header">
   <h1>📝 noteみっけ</h1>
   <p>アプリ名とコンセプトを入れるだけで、2500文字のnote記事を自動生成</p>
   <div class="header-actions">
     <button class="btn-hdr" onclick="openModal('howto')">📖 使い方</button>
-    <button class="btn-hdr" onclick="openModal('settings')">⚙️ 設定</button>
   </div>
 </div>
 
@@ -157,7 +142,7 @@ textarea{resize:vertical;min-height:80px;}
 
 <div class="container">
 
-  <!-- Paywall -->
+  <!-- ペイウォール -->
   <div class="paywall" id="paywall">
     <h3>✨ 無料トライアルが終了しました</h3>
     <p>3回の無料体験はいかがでしたか？<br>
@@ -166,12 +151,14 @@ textarea{resize:vertical;min-height:80px;}
     <a href="#" id="buyLink" class="btn-buy" target="_blank">月額 ¥2,980 で使い続ける →</a>
     <div class="pw-area">
       <p>購入済みの方はパスワードを入力してください</p>
-      <input type="password" id="pwInput" placeholder="パスワード">
-      <button class="btn-unlock" onclick="checkPassword()">解除</button>
+      <div class="pw-row">
+        <input type="password" id="pwInput" placeholder="パスワード">
+        <button class="btn-unlock" onclick="checkPassword()">解除</button>
+      </div>
     </div>
   </div>
 
-  <!-- ===== Input Form ===== -->
+  <!-- 入力フォーム -->
   <div class="card" id="inputCard">
     <div class="card-title">📋 アプリ情報を入力してください</div>
 
@@ -221,7 +208,7 @@ textarea{resize:vertical;min-height:80px;}
     </div>
 
     <label class="field-label">アピールポイント・エピソード<span class="badge-opt">任意</span></label>
-    <textarea id="episode" placeholder="例：実際に使ったスタッフから「毎日の投稿が5分で終わった」という声をいただきました。開発のきっかけは…"></textarea>
+    <textarea id="episode" placeholder="例：実際に使ったスタッフから「毎日の投稿が5分で終わった」という声をいただきました。"></textarea>
 
     <label class="field-label">SEOキーワード<span class="badge-opt">任意・カンマ区切りで3つまで</span></label>
     <input type="text" id="keywords" placeholder="例：薬局SNS, AIツール, 投稿自動化">
@@ -229,7 +216,7 @@ textarea{resize:vertical;min-height:80px;}
     <button class="btn-gen" id="genBtn" onclick="generate()">✨ note記事とサムネイルプロンプトを生成する</button>
   </div>
 
-  <!-- ===== Output ===== -->
+  <!-- 出力エリア -->
   <div class="output-section" id="outputSection">
     <div class="card">
       <div class="card-title">
@@ -242,14 +229,12 @@ textarea{resize:vertical;min-height:80px;}
         <button class="tab-btn" onclick="switchTab('mj')">🖼️ MJサムネイルプロンプト</button>
       </div>
 
-      <!-- Article tab -->
       <div id="tabArticle">
         <div class="char-count" id="charCount"></div>
         <div class="output-box" id="articleOut"></div>
         <button class="btn-copy" onclick="copyText('articleOut',this,'📋 記事をコピー')">📋 記事をコピー</button>
       </div>
 
-      <!-- MJ tab -->
       <div id="tabMj" style="display:none;">
         <div class="mj-box" id="mjOut"></div>
         <button class="btn-copy" onclick="copyText('mjOut',this,'📋 プロンプトをコピー')">📋 プロンプトをコピー</button>
@@ -257,9 +242,9 @@ textarea{resize:vertical;min-height:80px;}
     </div>
   </div>
 
-</div><!-- /container -->
+</div>
 
-<!-- ===== How-to Modal ===== -->
+<!-- 使い方モーダル -->
 <div class="modal-overlay" id="howtoModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('howto')">×</button>
@@ -270,7 +255,7 @@ textarea{resize:vertical;min-height:80px;}
     </div>
     <div class="howto-section">
       <strong>② 目的と文体を選ぶ</strong>
-      <p>誰に読んでほしいか、どんな目的で書くか、文章の雰囲気を選びます。構成パターンはPREP型が万能です。</p>
+      <p>誰に読んでほしいか、どんな目的で書くか、文章の雰囲気を選びます。</p>
     </div>
     <div class="howto-section">
       <strong>③ 生成ボタンをクリック</strong>
@@ -282,24 +267,9 @@ textarea{resize:vertical;min-height:80px;}
     </div>
     <div class="howto-section">
       <strong>⑤ サムネイルを作る</strong>
-      <p>「MJサムネイルプロンプト」タブのプロンプトをMidJourney V8に貼り付けてサムネイルを生成します。季節ごとに毎回違うカラーパレットを提案します🌸</p>
+      <p>MJプロンプトタブのプロンプトをMidJourney V8に貼り付けてサムネイルを生成します🌸</p>
     </div>
     <button class="btn-save" onclick="closeModal('howto')">閉じる</button>
-  </div>
-</div>
-
-<!-- ===== Settings Modal ===== -->
-<div class="modal-overlay" id="settingsModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('settings')">×</button>
-    <h2>⚙️ 設定</h2>
-    <label class="field-label">API URL（Cloudflare Worker）</label>
-    <input type="url" id="setApiUrl" placeholder="https://yymmatsu.workers.dev/api">
-    <label class="field-label">購入URL（Stripe）</label>
-    <input type="url" id="setBuyUrl" placeholder="https://buy.stripe.com/xxx">
-    <label class="field-label">解除パスワード</label>
-    <input type="text" id="setPassword" placeholder="パスワードを設定">
-    <button class="btn-save" onclick="saveSettings()">💾 保存する</button>
   </div>
 </div>
 
@@ -310,34 +280,13 @@ textarea{resize:vertical;min-height:80px;}
 
 <script>
 // ===========================
-//  定数・ストレージキー
+//  固定設定（変更不要）
 // ===========================
-const SK = 'note_mikke';
+const API_URL    = 'https://yymmatsu.workers.dev/api';
+const BUY_URL    = 'https://buy.stripe.com/xxx'; // ← Stripeリンクに変更してください
+const PASSWORD   = 'note2026';                   // ← 購入者向けパスワード
 const FREE_LIMIT = 3;
-
-// ===========================
-//  設定
-// ===========================
-function getSettings(){ return JSON.parse(localStorage.getItem(SK+'_s')||'{}'); }
-
-function saveSettings(){
-  const s = {
-    apiUrl: document.getElementById('setApiUrl').value.trim(),
-    buyUrl: document.getElementById('setBuyUrl').value.trim(),
-    password: document.getElementById('setPassword').value.trim()
-  };
-  localStorage.setItem(SK+'_s', JSON.stringify(s));
-  if(s.buyUrl) document.getElementById('buyLink').href = s.buyUrl;
-  closeModal('settings');
-  alert('設定を保存しました ✅');
-}
-
-function loadSettings(){
-  const s = getSettings();
-  if(s.apiUrl) document.getElementById('setApiUrl').value = s.apiUrl;
-  if(s.buyUrl){ document.getElementById('setBuyUrl').value = s.buyUrl; document.getElementById('buyLink').href = s.buyUrl; }
-  if(s.password) document.getElementById('setPassword').value = s.password;
-}
+const SK         = 'note_mikke';
 
 // ===========================
 //  使用回数・解除管理
@@ -351,19 +300,23 @@ function updateBanner(){
   const rem = Math.max(0, FREE_LIMIT - getCount());
   const el = document.getElementById('trialBanner');
   if(isUnlocked()){ el.style.display='none'; return; }
-  if(rem > 0){ el.textContent = `🎁 無料で残り${rem}回使えます！気に入ったらぜひご購入ください`; }
-  else{ el.style.display='none'; showPaywall(); }
+  if(rem > 0){
+    el.textContent = `🎁 無料で残り${rem}回使えます！気に入ったらぜひご購入ください`;
+  } else {
+    el.style.display='none';
+    showPaywall();
+  }
 }
 
 function showPaywall(){
+  document.getElementById('buyLink').href = BUY_URL;
   document.getElementById('paywall').style.display='block';
   document.getElementById('inputCard').style.display='none';
 }
 
 function checkPassword(){
-  const s = getSettings();
-  const pw = s.password || 'note2026';
-  if(document.getElementById('pwInput').value === pw){
+  const val = document.getElementById('pwInput').value;
+  if(val === PASSWORD){
     localStorage.setItem(SK+'_u','true');
     document.getElementById('paywall').style.display='none';
     document.getElementById('inputCard').style.display='block';
@@ -379,24 +332,26 @@ function checkPassword(){
 // ===========================
 function openModal(n){ document.getElementById(n+'Modal').classList.add('open'); }
 function closeModal(n){ document.getElementById(n+'Modal').classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(el=>{
+  el.addEventListener('click', e=>{ if(e.target===el) el.classList.remove('open'); });
+});
 
 // ===========================
-//  Tab
+//  Tab切り替え
 // ===========================
 function switchTab(tab){
   document.querySelectorAll('.tab-btn').forEach((b,i)=>{
     b.classList.toggle('active',(tab==='article')?(i===0):(i===1));
   });
   document.getElementById('tabArticle').style.display = tab==='article'?'block':'none';
-  document.getElementById('tabMj').style.display = tab==='mj'?'block':'none';
+  document.getElementById('tabMj').style.display      = tab==='mj'?'block':'none';
 }
 
 // ===========================
 //  コピー
 // ===========================
 function copyText(id, btn, label){
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(()=>{
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(()=>{
     btn.textContent='✅ コピーしました！';
     btn.classList.add('copied');
     setTimeout(()=>{ btn.textContent=label; btn.classList.remove('copied'); },2200);
@@ -410,36 +365,36 @@ function getSeasonalTheme(){
   const m = new Date().getMonth()+1;
   const themes = {
     spring:[
-      { name:'🌸 春・桜ピンク', palette:'soft pink sakura #ffb7c5 and cream white #fff8f0',
-        prompt:'Japanese spring cherry blossom background, soft pink sakura in full bloom with gentle warm light, delicate petals floating, pastel dreamlike atmosphere'},
-      { name:'🌿 春・新緑ミント', palette:'mint fresh green #b8f0c8 and sky blue #d4eeff',
-        prompt:'Japanese spring fresh green theme, new leaves sprouting under soft morning light, refreshing breeze, vibrant young green and pale blue sky'},
-      { name:'💜 春・藤紫', palette:'wisteria purple #c9b1ff and lavender mist #e8e0ff',
-        prompt:'Japanese spring wisteria theme, purple wisteria blooms hanging gracefully, soft lavender haze, ethereal romantic spring atmosphere'},
+      { name:'🌸 春・桜ピンク',
+        prompt:'Japanese spring cherry blossom background, soft pink sakura in full bloom with gentle warm light, delicate petals floating, pastel dreamlike atmosphere, pale pink #ffb7c5 and cream white #fff8f0'},
+      { name:'🌿 春・新緑ミント',
+        prompt:'Japanese spring fresh green theme, new leaves sprouting under soft morning light, refreshing breeze, vibrant young green #b8f0c8 and pale sky blue #d4eeff'},
+      { name:'💜 春・藤紫',
+        prompt:'Japanese spring wisteria theme, purple wisteria blooms hanging gracefully, soft lavender haze, ethereal romantic atmosphere, wisteria purple #c9b1ff and lavender mist #e8e0ff'},
     ],
     summer:[
-      { name:'🌊 夏・海ブルー', palette:'deep turquoise #005f87 and coral accent #ff6b6b',
-        prompt:'Japanese summer ocean theme, bright turquoise sea under blazing sun, tropical blue water, energetic vibrant summer light'},
-      { name:'🎆 夏・祭りネイビー', palette:'deep navy #1a2744 and festival gold #ffd700',
-        prompt:'Japanese summer festival night theme, deep navy sky with lanterns and fireworks, warm golden glow, exciting summer matsuri atmosphere'},
-      { name:'🌿 夏・深緑', palette:'emerald deep green #00704a and lime #a8e063',
-        prompt:'Japanese summer forest theme, lush emerald mountain forest, cool refreshing green shade, vibrant summer energy with deep green tones'},
+      { name:'🌊 夏・海ブルー',
+        prompt:'Japanese summer ocean theme, bright turquoise sea under blazing sun, energetic vibrant summer, deep turquoise #005f87 and coral accent #ff6b6b'},
+      { name:'🎆 夏・祭りネイビー',
+        prompt:'Japanese summer festival night theme, deep navy sky with lanterns and fireworks, warm golden glow, exciting matsuri atmosphere, deep navy #1a2744 and festival gold #ffd700'},
+      { name:'🌿 夏・深緑',
+        prompt:'Japanese summer forest theme, lush emerald mountain forest, cool refreshing green shade, vibrant energy, emerald green #00704a and lime #a8e063'},
     ],
     autumn:[
-      { name:'🍁 秋・紅葉クリムゾン', palette:'crimson red #cc2929 and amber #f4a127',
-        prompt:'Japanese autumn maple theme, brilliant crimson red maple leaves, warm amber golden light, cozy nostalgic autumn forest atmosphere'},
-      { name:'🍊 秋・収穫オレンジ', palette:'harvest orange #f97316 and earth brown #6b3a2a',
-        prompt:'Japanese autumn harvest theme, rich pumpkin orange and warm brown tones, abundant harvest season, cozy comfortable autumn ambiance'},
-      { name:'🌕 秋・銀杏ゴールド', palette:'ginkgo yellow #fbbf24 and moss green #4a7c59',
-        prompt:'Japanese autumn ginkgo avenue theme, rows of golden yellow ginkgo trees, soft nostalgic dusk light, warm peaceful autumn evening'},
+      { name:'🍁 秋・紅葉クリムゾン',
+        prompt:'Japanese autumn maple theme, brilliant crimson red maple leaves, warm amber golden light, cozy nostalgic forest, crimson red #cc2929 and amber #f4a127'},
+      { name:'🍊 秋・収穫オレンジ',
+        prompt:'Japanese autumn harvest theme, rich pumpkin orange and warm brown tones, abundant harvest season, cozy comfortable ambiance, harvest orange #f97316 and earth brown #6b3a2a'},
+      { name:'🌕 秋・銀杏ゴールド',
+        prompt:'Japanese autumn ginkgo avenue theme, rows of golden yellow ginkgo trees, soft nostalgic dusk light, warm peaceful evening, ginkgo yellow #fbbf24 and moss green #4a7c59'},
     ],
     winter:[
-      { name:'❄️ 冬・雪景色アイスブルー', palette:'ice blue #bae6fd and pure snow white #f0f9ff',
-        prompt:'Japanese winter snow theme, pristine white snowflakes gently falling, ice blue crystal clear sky, quiet serene pure winter landscape'},
-      { name:'🌃 冬・真夜中ネイビー', palette:'midnight navy #0f172a and silver star #cbd5e1',
-        prompt:'Japanese winter midnight theme, deep midnight navy starry sky, silver moonlight glistening on frost, crisp cold silent winter night'},
-      { name:'🌸 冬・梅ローズ', palette:'charcoal dark #1c1c1e and plum rose #fb7185',
-        prompt:'Japanese winter plum blossom theme, delicate pink plum flowers blooming in cold dark night, elegant resilience against winter, sophisticated subtle beauty'},
+      { name:'❄️ 冬・雪景色アイスブルー',
+        prompt:'Japanese winter snow theme, pristine white snowflakes gently falling, ice blue crystal clear sky, quiet serene pure landscape, ice blue #bae6fd and snow white #f0f9ff'},
+      { name:'🌃 冬・真夜中ネイビー',
+        prompt:'Japanese winter midnight theme, deep midnight navy starry sky, silver moonlight glistening on frost, crisp cold silent night, midnight navy #0f172a and silver star #cbd5e1'},
+      { name:'🌸 冬・梅ローズ',
+        prompt:'Japanese winter plum blossom theme, delicate pink plum flowers blooming in cold dark night, elegant resilience against winter, sophisticated beauty, charcoal dark #1c1c1e and plum rose #fb7185'},
     ]
   };
   let season;
@@ -473,13 +428,11 @@ async function generate(){
     return;
   }
 
-  const s = getSettings();
-  const apiUrl = s.apiUrl || 'https://yymmatsu.workers.dev/api';
   const seasonal = getSeasonalTheme();
 
-  // UI更新
   const btn = document.getElementById('genBtn');
-  btn.disabled=true; btn.textContent='⏳ 生成中です...少しお待ちください';
+  btn.disabled=true;
+  btn.textContent='⏳ 生成中です...少しお待ちください';
   document.getElementById('outputSection').style.display='block';
   document.getElementById('seasonTag').textContent = seasonal.name;
   document.getElementById('articleOut').innerHTML='<div class="loading">✍️ note記事を生成中<span class="dots"></span></div>';
@@ -488,9 +441,8 @@ async function generate(){
   switchTab('article');
   document.getElementById('outputSection').scrollIntoView({behavior:'smooth'});
 
-  // ===== Article Prompt =====
   const buySection = buyUrl
-    ? `・購入URLへの優しい誘導文（「よかったらこちらからどうぞ」程度の押しつけがましくない1〜2文）\n  購入URL：${buyUrl}`
+    ? `・購入URLへの自然な誘導文（押しつけがましくない1〜2文）\n  購入URL：${buyUrl}`
     : '';
 
   const articlePrompt = `あなたはnoteで人気の記事を書くプロのライターです。
@@ -512,80 +464,78 @@ ${keywords?'SEOキーワード（自然に組み込む）：'+keywords:''}
 （タイトル30文字以内・サブタイトル25文字以内、コロンで区切る）
 
 本文：
-- ## 大見出し を2〜3個使う
-- ### 小見出し を各大見出しの中に2〜3個使う
-- 合計で約2500文字の読み応えある内容にする
-- noteらしい親しみやすい文体で、最後まで読まれる記事にする
+・## 大見出し を2〜3個使う
+・### 小見出し を各大見出しの中に2〜3個使う
+・合計で約2500文字の読み応えある内容にする
+・noteらしい親しみやすい文体で、最後まで読まれる記事にする
 
 【記事末尾に必ず含めること】
 ・アプリURL（${appUrl}）への優しい誘導文（1〜2文、自然に）
 ${buySection}
-・空行1行
+・空行
 ・ハッシュタグ7つを横並び（スペース区切り）
-  例：#AI活用 #中小企業支援 #${appName} ... ※関連性の高いものを選ぶ
+  例：#AI活用 #中小企業支援 #${appName} ※関連性の高いものを選ぶ
 
 本文のみ出力してください。余計な前置きや説明は不要です。`;
 
-  // ===== MJ Prompt =====
   const mjPrompt = `以下の情報をもとに、MidJourney V8用のサムネイル画像プロンプト（英語）を1つ生成してください。
 
 アプリ名（日本語テキストとして画像に入れる）：${appName}
 キャッチコピー（日本語テキストとして画像に入れる）：${concept}
 季節・カラーテーマ：${seasonal.prompt}
-カラーパレット参考：${seasonal.palette}
 
 必ず含める要素：
-- large bold white Japanese text "${appName}" prominently displayed in upper area
-- smaller white Japanese subtitle text "${concept}" below the title
-- ${seasonal.prompt}
-- sleek modern Japanese commercial design style
-- cinematic lighting, photorealistic quality
-- ultra sharp crisp text rendering
-- professional thumbnail composition, 8k quality
-- --ar 16:9 --v 8
+・large bold white Japanese text "${appName}" prominently displayed in upper area
+・smaller white Japanese subtitle text "${concept}" below the title
+・${seasonal.prompt}
+・sleek modern Japanese commercial design style
+・cinematic lighting, photorealistic quality
+・ultra sharp crisp text rendering
+・professional thumbnail composition, 8k quality
+・--ar 16:9 --v 8
 
 プロンプト本文のみ出力してください。説明不要です。`;
 
   try {
-    // 記事生成
-    const r1 = await fetch(apiUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-haiku-4-5',
-        max_tokens:4096,
-        messages:[{role:'user',content:articlePrompt}]
+    const [r1, r2] = await Promise.all([
+      fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-haiku-4-5',
+          max_tokens:4096,
+          messages:[{role:'user',content:articlePrompt}]
+        })
+      }),
+      fetch(API_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          model:'claude-haiku-4-5',
+          max_tokens:1024,
+          messages:[{role:'user',content:mjPrompt}]
+        })
       })
-    });
-    const d1 = await r1.json();
-    const articleText = d1.content?.[0]?.text || 'エラーが発生しました。API URLの設定を確認してください。';
+    ]);
 
-    // MJプロンプト生成
-    const r2 = await fetch(apiUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-haiku-4-5',
-        max_tokens:1024,
-        messages:[{role:'user',content:mjPrompt}]
-      })
-    });
+    const d1 = await r1.json();
     const d2 = await r2.json();
-    const mjText = d2.content?.[0]?.text || 'エラーが発生しました。';
+
+    const articleText = d1.content?.[0]?.text || 'エラーが発生しました。Worker URLを確認してください。';
+    const mjText      = d2.content?.[0]?.text || 'エラーが発生しました。';
 
     document.getElementById('articleOut').textContent = articleText;
     document.getElementById('mjOut').textContent = mjText;
 
-    // 文字数表示
-    const bodyText = articleText.replace(/^.+：.+\n/,'').replace(/#[^\s]+/g,'').trim();
-    document.getElementById('charCount').textContent = `📊 本文文字数：約${bodyText.length.toLocaleString()}文字`;
+    const bodyLen = articleText.replace(/^.+：.+\n/,'').replace(/#[^\s]+/g,'').trim().length;
+    document.getElementById('charCount').textContent = `📊 本文文字数：約${bodyLen.toLocaleString()}文字`;
 
     addCount();
     updateBanner();
 
   } catch(err){
     document.getElementById('articleOut').textContent =
-      'エラーが発生しました。\n\n⚙️ 設定からAPI URLを確認してください。\n\n詳細：'+err.message;
+      'エラーが発生しました。\n\nWorker（yymmatsu.workers.dev）が動いているか確認してください。\n\n詳細：'+err.message;
   } finally {
     btn.disabled=false;
     btn.textContent='✨ note記事とサムネイルプロンプトを生成する';
@@ -595,13 +545,7 @@ ${buySection}
 // ===========================
 //  初期化
 // ===========================
-loadSettings();
 updateBanner();
-
-// モーダル外クリックで閉じる
-document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click', e=>{ if(e.target===el) el.classList.remove('open'); });
-});
 </script>
 </body>
 </html>
