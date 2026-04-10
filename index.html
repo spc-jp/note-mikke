@@ -295,8 +295,8 @@ textarea{resize:vertical;min-height:80px;}
       </label>
     </div>
 
-    <label class="field-label">アピールポイント・エピソード<span class="badge-opt">任意</span></label>
-    <textarea id="episode" placeholder="例：実際に使ったスタッフから「毎日の投稿が5分で終わった」という声をいただきました。"></textarea>
+    <label class="field-label">アプリコンセプト<span class="badge-opt">任意</span></label>
+    <textarea id="episode" placeholder="例：このアプリは「忙しい薬局スタッフでも毎日SNS投稿できる」をコンセプトに開発しました。開発背景や想い、実際の声などを自由に入力してください。"></textarea>
 
     <label class="field-label">SEOキーワード<span class="badge-opt">任意・カンマ区切りで3つまで</span></label>
     <input type="text" id="keywords" placeholder="例：薬局SNS, AIツール, 投稿自動化">
@@ -559,8 +559,10 @@ ${episode?'エピソード・アピールポイント：'+episode:''}
 ${keywords?'SEOキーワード（自然に組み込む）：'+keywords:''}
 
 【出力形式】
-1行目：タイトル：短いサブタイトル
-（タイトル30文字以内・サブタイトル25文字以内、コロンで区切る）
+1行目：タイトル：サブタイトル
+・タイトルは読者ターゲット（${targetText}）が思わず読みたくなるキャッチーな表現にする
+・「〇〇が変わる」「知らないと損」「たった◯分で」「もう悩まない」など、ベネフィットや数字を入れると効果的
+・タイトルは30文字以内、サブタイトルは25文字以内、コロンで区切る
 
 本文：
 ・## 大見出し を2〜3個使う
