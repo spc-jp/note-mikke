@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>noteみっけ｜note記事ジェネレーター</title>
+<link rel="icon" type="image/png" href="https://spc-jp.github.io/note-mikke/favicon.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Hiragino Sans','Meiryo',sans-serif;background:#f0f4ff;color:#1a1a2e;min-height:100vh;}
@@ -187,6 +188,9 @@ textarea{resize:vertical;min-height:80px;}
 
     <hr class="divider">
 
+    <label class="field-label">🎨 テーマカラー・背景イメージ（MidJourney用）<span class="badge-opt">任意</span></label>
+    <input type="text" id="bgColor" placeholder="例：青のグラデーション、海、暖かいオレンジ、未来的な夜景 など">
+
     <label class="field-label">🖼️ サムネイル画像スタイル（MidJourney用）<span class="badge-req">必須</span></label>
     <div class="mj-pills">
       <input type="radio" name="mjstyle" id="mj1" value="seasonal" checked><label for="mj1">🌸 季節テーマ自動</label>
@@ -282,54 +286,70 @@ const API_URL = 'https://note-mikke-api.yymmatsu.workers.dev';
 const MJ_STYLES = {
   seasonal:{
     label:'🌸 季節テーマ',
-    build(n,c){
+    build(n,c,bg){
       const m=new Date().getMonth()+1;
       const th={
         spring:[
-          {tag:'🌸 桜ピンク',bg:'Japanese spring cherry blossom background, soft pink sakura in full bloom, delicate petals floating, pastel dreamlike atmosphere, pale pink #ffb7c5 and cream white #fff8f0'},
-          {tag:'🌿 新緑ミント',bg:'Japanese spring fresh green theme, new leaves sprouting, refreshing breeze, vibrant young green #b8f0c8 and pale sky blue #d4eeff'},
-          {tag:'💜 藤紫',bg:'Japanese spring wisteria theme, purple wisteria blooms hanging gracefully, soft lavender haze, wisteria purple #c9b1ff and lavender mist #e8e0ff'}
+          {tag:'🌸 桜ピンク',bg:'soft pink sakura background, delicate petals floating, pastel dreamlike atmosphere'},
+          {tag:'🌿 新緑ミント',bg:'fresh green leaves background, refreshing breeze, vibrant young green'},
+          {tag:'💜 藤紫',bg:'purple wisteria blooms background, soft lavender haze'}
         ],
         summer:[
-          {tag:'🌊 海ブルー',bg:'Japanese summer ocean theme, bright turquoise sea under blazing sun, deep turquoise #005f87 and coral accent #ff6b6b'},
-          {tag:'🎆 祭りネイビー',bg:'Japanese summer festival night theme, deep navy sky with lanterns and fireworks, warm golden glow, deep navy #1a2744 and festival gold #ffd700'},
-          {tag:'🌿 深緑',bg:'Japanese summer lush emerald mountain forest, cool refreshing green shade, emerald green #00704a and lime #a8e063'}
+          {tag:'🌊 海ブルー',bg:'bright turquoise sea background, blazing sun'},
+          {tag:'🎆 祭りネイビー',bg:'deep navy sky with lanterns and fireworks, festival night'},
+          {tag:'🌿 深緑',bg:'lush emerald mountain forest background, cool refreshing shade'}
         ],
         autumn:[
-          {tag:'🍁 紅葉',bg:'Japanese autumn maple theme, brilliant crimson red maple leaves, warm amber golden light, crimson red #cc2929 and amber #f4a127'},
-          {tag:'🍊 収穫オレンジ',bg:'Japanese autumn harvest theme, rich pumpkin orange and warm brown tones, harvest orange #f97316 and earth brown #6b3a2a'},
-          {tag:'🌕 銀杏ゴールド',bg:'Japanese autumn ginkgo avenue, rows of golden yellow ginkgo trees, soft nostalgic dusk light, ginkgo yellow #fbbf24 and moss green #4a7c59'}
+          {tag:'🍁 紅葉',bg:'brilliant crimson red maple leaves background, warm amber light'},
+          {tag:'🍊 収穫オレンジ',bg:'harvest orange and warm brown tones background'},
+          {tag:'🌕 銀杏ゴールド',bg:'rows of golden yellow ginkgo trees background, soft nostalgic dusk'}
         ],
         winter:[
-          {tag:'❄️ 雪景色',bg:'Japanese winter snow theme, pristine white snowflakes falling, ice blue crystal sky, ice blue #bae6fd and snow white #f0f9ff'},
-          {tag:'🌃 真夜中',bg:'Japanese winter midnight theme, deep midnight navy starry sky, silver moonlight on frost, midnight navy #0f172a and silver #cbd5e1'},
-          {tag:'🌸 梅ローズ',bg:'Japanese winter plum blossom, delicate pink plum flowers blooming in cold dark night, charcoal #1c1c1e and plum rose #fb7185'}
+          {tag:'❄️ 雪景色',bg:'pristine white snowflakes falling, ice blue crystal sky'},
+          {tag:'🌃 真夜中',bg:'deep midnight navy starry sky, silver moonlight'},
+          {tag:'🌸 梅ローズ',bg:'delicate pink plum flowers blooming in dark night'}
         ]
       };
       const s=m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter';
       const t=th[s][Math.floor(Math.random()*3)];
-      return {tag:t.tag, prompt:`Japanese blog thumbnail image, large bold white Japanese text "${n}" prominently in upper area, smaller white Japanese subtitle "${c}" below, ${t.bg}, sleek modern Japanese commercial design, cinematic lighting, ultra sharp text rendering, 8k --ar 16:9 --v 8`};
+      const bgPrompt = bg ? bg : t.bg;
+      return {tag: bg ? '🎨 カスタム背景' : t.tag, prompt:`Japanese seasonal concept, ${bgPrompt}, beautiful atmosphere, top text "${n}", center text "${c}", bold typography, advertising style, --ar 16:9 --v 8`};
     }
   },
   cinematic:{
     label:'🎬 シネマティック',
-    build(n,c){return{tag:'',prompt:`Japanese blog thumbnail image, large bold white Japanese text "${n}" prominently in upper area, smaller white Japanese subtitle "${c}" below, cinematic photorealistic style, dramatic volumetric lighting with warm golden and cool blue contrast, shallow depth of field bokeh, film grain texture, moody atmospheric depth, deep navy #1a2744 background, sleek professional commercial photography, ultra sharp text, 8k --ar 16:9 --v 8`};}
+    build(n,c,bg){
+      const bgPrompt = bg ? bg : 'deep navy background, warm golden and cool blue contrast';
+      return{tag:'',prompt:`cinematic photorealistic style, ${bgPrompt}, dramatic lighting, high contrast, top text "${n}", center text "${c}", bold typography, advertising style, --ar 16:9 --v 8`};
+    }
   },
   wagamodan:{
     label:'🎨 和モダン',
-    build(n,c){return{tag:'',prompt:`Japanese blog thumbnail image, large bold Japanese text "${n}" prominently in upper area, smaller Japanese subtitle "${c}" below, modern Japanese illustration style, flat design with subtle gradients, traditional Japanese color palette with navy #223670 and gold #D0A900, minimalist elegant composition, editorial magazine style, delicate Japanese botanical motifs, sophisticated contemporary graphic design, 8k --ar 16:9 --v 8`};}
+    build(n,c,bg){
+      const bgPrompt = bg ? bg : 'navy and gold traditional Japanese colors';
+      return{tag:'',prompt:`modern Japanese illustration, flat design, ${bgPrompt}, minimalist elegant composition, top text "${n}", center text "${c}", bold typography, advertising style, --ar 16:9 --v 8`};
+    }
   },
   ghibli:{
     label:'🍃 ジブリ漫画風',
-    build(n,c){return{tag:'',prompt:`Japanese blog thumbnail image, large bold Japanese text "${n}" prominently in upper area, smaller Japanese subtitle "${c}" below, Studio Ghibli anime style, warm nostalgic watercolor background, vivid sky and fluffy clouds, lush green nature, peaceful heartwarming atmosphere, detailed cel shading, nostalgic 90s anime aesthetic, 8k --ar 16:9 --v 8`};}
+    build(n,c,bg){
+      const bgPrompt = bg ? bg : 'warm watercolor background, vivid sky and clouds, lush green';
+      return{tag:'',prompt:`Studio Ghibli anime style, ${bgPrompt}, nostalgic peaceful atmosphere, top text "${n}", center text "${c}", bold typography, advertising style, --ar 16:9 --v 8`};
+    }
   },
   neon:{
     label:'🌃 ネオン未来',
-    build(n,c){return{tag:'',prompt:`Japanese blog thumbnail image, large bold glowing Japanese text "${n}" prominently in upper area, smaller glowing Japanese subtitle "${c}" below, cyberpunk Tokyo neon cityscape at night, rain-soaked reflective streets with neon puddles, holographic UI elements floating in air, electric blue #00f5ff and magenta #ff00ff and gold #ffd700 neon lights, ultra detailed futuristic Japanese city, dramatic cinematic lighting, 8k --ar 16:9 --v 8`};}
+    build(n,c,bg){
+      const bgPrompt = bg ? bg : 'blue and magenta neon lights, rain-soaked reflective streets';
+      return{tag:'',prompt:`cyberpunk Tokyo cityscape at night, ${bgPrompt}, holographic UI, futuristic, top text "${n}", center text "${c}", glowing text, bold typography, advertising style, --ar 16:9 --v 8`};
+    }
   },
   isometric:{
     label:'📦 3Dミニチュア',
-    build(n,c){return{tag:'',prompt:`Japanese blog thumbnail image, large bold Japanese text "${n}" prominently in upper area, smaller Japanese subtitle "${c}" below, isometric 3D illustration, cute miniature diorama style, bright pastel colors, soft studio lighting, clean minimal background, tech startup concept, playful and modern, high quality 3D render, octane render, 8k --ar 16:9 --v 8`};}
+    build(n,c,bg){
+      const bgPrompt = bg ? bg : 'bright pastel colors, clean minimal background';
+      return{tag:'',prompt:`isometric 3D illustration, miniature diorama style, ${bgPrompt}, soft studio lighting, top text "${n}", center text "${c}", bold typography, advertising style, --ar 16:9 --v 8`};
+    }
   }
 };
 
@@ -370,6 +390,7 @@ async function generate(){
   const mjKey=document.querySelector('input[name=mjstyle]:checked').value;
   const episode=document.getElementById('episode').value.trim();
   const keywords=document.getElementById('keywords').value.trim();
+  const bgColor=document.getElementById('bgColor').value.trim();
   const alertEl=document.getElementById('targetAlert');
 
   if(!appName||!concept||!appUrl){alert('アプリ名・コンセプト・URLは必須です✋');return;}
@@ -377,7 +398,7 @@ async function generate(){
   alertEl.style.display='none';
 
   const targetText=targets.join('、');
-  const styleData=MJ_STYLES[mjKey].build(appName,concept);
+  const styleData=MJ_STYLES[mjKey].build(appName,concept,bgColor);
   const btn=document.getElementById('genBtn');
 
   btn.disabled=true;btn.textContent='⏳ 生成中です...少しお待ちください';
@@ -425,15 +446,24 @@ ${buySection}
 
 本文のみ出力。余計な説明は不要です。`;
 
+  // ユーザーが背景を指定した場合、Claudeに英訳・統合させて綺麗なプロンプトにする
+  const mjApiPrompt = bgColor
+    ? `以下のMidJourney V8用プロンプトには日本語の背景指定が含まれています。日本語部分を自然な英語に翻訳し、全体として1つの英語のプロンプトテキストに整えて出力してください。余計な説明や挨拶は一切不要です。プロンプトのみを出力してください。\n\n${styleData.prompt}`
+    : `以下のMidJourney V8プロンプトをそのまま出力してください。説明不要。\n\n${styleData.prompt}`;
+
   try{
     const[r1,r2]=await Promise.all([
       fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:4096,messages:[{role:'user',content:ap}]})}),
-      fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:512,messages:[{role:'user',content:`以下のMidJourney V8プロンプトをそのまま出力してください。説明不要。\n\n${styleData.prompt}`}]})})
+      fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-haiku-4-5',max_tokens:512,messages:[{role:'user',content:mjApiPrompt}]})})
     ]);
     const d1=await r1.json();const d2=await r2.json();
     const at=d1.content?.[0]?.text||'エラーが発生しました。';
     const mt=d2.content?.[0]?.text||styleData.prompt;
-    document.getElementById('articleOut').textContent=at;
+    
+    // 生成された記事の先頭にアプリ名とアプリURLを追加
+    const finalArticle = `アプリ名：${appName}\nアプリURL：${appUrl}\n\n${at}`;
+    
+    document.getElementById('articleOut').textContent=finalArticle;
     document.getElementById('mjOut').textContent=mt;
     const bl=at.replace(/^.+：.+\n/,'').replace(/#[^\s]+/g,'').trim().length;
     document.getElementById('charCount').textContent=`📊 本文文字数：約${bl.toLocaleString()}文字`;
